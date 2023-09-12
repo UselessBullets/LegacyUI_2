@@ -15,7 +15,6 @@ loom {
 
 repositories {
 	mavenCentral()
-	maven { url = "https://jitpack.io" }
 	maven {
 		name = 'Babric'
 		url = 'https://maven.glass-launcher.net/babric'
@@ -23,6 +22,9 @@ repositories {
 	maven {
 		name = 'Fabric'
 		url = 'https://maven.fabricmc.net/'
+	}
+	maven {
+		url = "https://jitpack.io"
 	}
 	ivy {
 		url = "https://github.com/Better-than-Adventure"
@@ -43,15 +45,15 @@ repositories {
 	ivy {
 		url = "https://github.com/Turnip-Labs"
 		patternLayout {
-			artifact "[organisation]/releases/download/[revision]/[module]-[revision].jar"
+			artifact "[organisation]/releases/download/[revision]/[module]-bta-[revision].jar"
 			m2compatible = true
 		}
 		metadataSources { artifact() }
 	}
 	ivy {
-		url = "https://github.com/Turnip-Labs"
+		url = "https://github.com/UselessBullets"
 		patternLayout {
-			artifact "[organisation]/releases/download/[revision]/[module]-bta-[revision].jar"
+			artifact "[organisation]/releases/download/v[revision]/[module]-[revision].jar"
 			m2compatible = true
 		}
 		metadataSources { artifact() }
@@ -72,6 +74,14 @@ repositories {
 		}
 		metadataSources { artifact() }
 	}
+	ivy {
+		url = "https://github.com/UselessBullets"
+		patternLayout {
+			artifact "[organisation]/releases/download/[revision]/[module]-[revision].jar"
+			m2compatible = true
+		}
+		metadataSources { artifact() }
+	}
 }
 
 dependencies {
@@ -86,6 +96,9 @@ dependencies {
 	modImplementation "com.github.Turnip-Labs:bta-halplibe:${project.halplibe_version}"
 
 	modImplementation "ModMenu:ModMenu:2.0.0"
+	modImplementation "BTA_Babric_GuiLabels:GuiLabels:2.0.0"
+	modImplementation "BTA_Babric_PrismaticLibe:prismaticlibe:${project.prismatic_version}"
+	modImplementation "BTA_Babric_SpawnEggs:spawneggs:1.3.0"
 
 	implementation "org.slf4j:slf4j-api:1.8.0-beta4"
 	implementation "org.apache.logging.log4j:log4j-slf4j18-impl:2.16.0"
@@ -97,6 +110,7 @@ dependencies {
 	implementation("org.apache.logging.log4j:log4j-core:${log4jVersion}")
 	implementation("org.apache.logging.log4j:log4j-api:${log4jVersion}")
 	implementation("org.apache.logging.log4j:log4j-1.2-api:${log4jVersion}")
+	implementation("log4j:apache-log4j-extras:1.2.17")
 }
 
 java {

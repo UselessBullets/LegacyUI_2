@@ -11,9 +11,14 @@ public class LegacyUI implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        IconHelper.getOrCreateIconTexture(MOD_ID, "grass.png");
+        IconHelper.getOrCreateIconTexture(MOD_ID, "planks.png");
         IconHelper.getOrCreateIconTexture(MOD_ID, "bricks.png");
+        IconHelper.getOrCreateIconTexture(MOD_ID, "tools.png");
         IconHelper.getOrCreateIconTexture(MOD_ID, "health.png");
+        IconHelper.getOrCreateIconTexture(MOD_ID, "lever.png");
+        IconHelper.getOrCreateIconTexture(MOD_ID, "rail.png");
+        IconHelper.getOrCreateIconTexture(MOD_ID, "painting.png");
+        IconHelper.getOrCreateIconTexture(MOD_ID, "modded.png");
         LOGGER.info("LegacyUI initialized.");
     }
 }

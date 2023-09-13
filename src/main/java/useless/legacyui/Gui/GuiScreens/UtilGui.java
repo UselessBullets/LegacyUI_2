@@ -26,13 +26,14 @@ public class UtilGui {
     }
 
     public static void drawIconTexture(Gui gui, int x, int y, int iconCoordX, int iconCoordY, float scale){
+        int width = (int) (IconHelper.ICON_RESOLUTION * scale);
         drawTexturedModalRect(gui,
                 x,
                 y,
-                (iconCoordX * IconHelper.ICON_RESOLUTION),
-                (iconCoordY * IconHelper.ICON_RESOLUTION),
-                (int) (IconHelper.ICON_RESOLUTION * scale),
-                (int) (IconHelper.ICON_RESOLUTION * scale),
+                (iconCoordX * width),
+                (iconCoordY * width),
+                width,
+                width,
                 (1f/(IconHelper.ICON_RESOLUTION * IconHelper.ICON_ATLAS_WIDTH_TILES)) * (1/scale));
     }
 }

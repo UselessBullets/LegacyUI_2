@@ -1,12 +1,16 @@
 package useless.legacyui.Gui.GuiScreens;
 
 import net.minecraft.client.gui.GuiContainer;
+import net.minecraft.core.item.Item;
+import net.minecraft.core.lang.I18n;
 import net.minecraft.core.player.inventory.Container;
 import net.minecraft.core.player.inventory.ContainerWorkbench;
 import net.minecraft.core.player.inventory.InventoryPlayer;
 import net.minecraft.core.player.inventory.slot.Slot;
 import net.minecraft.core.world.World;
 import useless.legacyui.Gui.Containers.LegacyContainerCrafting;
+import useless.legacyui.LegacyUI;
+import useless.legacyui.ModSettings;
 import useless.prismaticlibe.gui.slot.SlotResizable;
 
 public class GuiLegacyCrafting extends GuiContainer {
@@ -29,6 +33,11 @@ public class GuiLegacyCrafting extends GuiContainer {
     public void onGuiClosed() {
         super.onGuiClosed();
         this.inventorySlots.onCraftGuiClosed(this.mc.thePlayer);
+    }
+    protected void drawGuiContainerForegroundLayer(){
+        drawStringCenteredNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.inventory"),205, 97, ModSettings.Colors.GuiLabelColor());
+        drawStringCenteredNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.crafting"),73, 97, ModSettings.Colors.GuiLabelColor());
+        drawStringCenteredNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.categorydefault"),xSize/2, 36, ModSettings.Colors.GuiLabelColor());
     }
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick) {

@@ -5,7 +5,9 @@ import net.minecraft.client.gui.GuiInventory;
 import net.minecraft.client.render.EntityRenderDispatcher;
 import net.minecraft.client.render.Lighting;
 import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.lang.I18n;
 import org.lwjgl.opengl.GL11;
+import useless.legacyui.LegacyUI;
 import useless.legacyui.Mixins.GuiInventoryAccessor;
 import useless.legacyui.ModSettings;
 import useless.prismaticlibe.gui.GuiAuditoryButtons;
@@ -56,7 +58,7 @@ public class GuiLegacyInventory extends GuiInventory {
 
     }
     protected void drawGuiContainerForegroundLayer() {
-        drawStringNoShadow(fontRenderer, "Inventory",8, 82, ModSettings.Colors.GuiLabelColor());
+        drawStringNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.inventory"),8, 82, ModSettings.Colors.GuiLabelColor());
     }
     protected void drawGuiContainerBackgroundLayer(float f) {
         UtilGui.bindTexture("/assets/legacyui/gui/legacyinventory.png");

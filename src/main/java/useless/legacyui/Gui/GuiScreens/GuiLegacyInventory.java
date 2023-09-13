@@ -6,7 +6,6 @@ import net.minecraft.client.render.EntityRenderDispatcher;
 import net.minecraft.client.render.Lighting;
 import net.minecraft.core.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
-import useless.legacyui.LegacyUI;
 import useless.legacyui.Mixins.GuiInventoryAccessor;
 import useless.legacyui.ModSettings;
 import useless.prismaticlibe.gui.GuiAuditoryButtons;

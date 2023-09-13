@@ -57,7 +57,9 @@ public class GuiLegacyInventory extends GuiInventory {
         this.drawTexturedModalRect(craftButton.xPosition, craftButton.yPosition, 177, craftButton.isHovered(x,y) ? 77:54, craftButton.width, craftButton.height); // Crafting Button Render
 
     }
-    protected void drawGuiContainerForegroundLayer() {}
+    protected void drawGuiContainerForegroundLayer() {
+        drawStringNoShadow(fontRenderer, "Inventory",8, 82, ModSettings.Colors.GuiLabelColor());
+    }
     protected void drawGuiContainerBackgroundLayer(float f) {
         bindTexture("/assets/legacyui/gui/legacyinventory.png");
         this.drawTexturedModalRect(GUIx, GUIy, 0, 0, this.xSize, this.ySize);

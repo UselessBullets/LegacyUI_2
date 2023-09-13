@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.render.Tessellator;
 import org.lwjgl.opengl.GL11;
+import useless.legacyui.IconHelper;
 
 public class UtilGui {
     public static Minecraft mc = Minecraft.getMinecraft(Minecraft.class);
@@ -22,5 +23,16 @@ public class UtilGui {
         tessellator.addVertexWithUV(x + width, y + 0, gui.zLevel, (float)(u + width) * uScale, (float)(v + 0) * vScale);
         tessellator.addVertexWithUV(x + 0, y + 0, gui.zLevel, (float)(u + 0) * uScale, (float)(v + 0) * vScale);
         tessellator.draw();
+    }
+
+    public static void drawIconTexture(Gui gui, int x, int y, int iconCoordX, int iconCoordY, float scale){
+        drawTexturedModalRect(gui,
+                x,
+                y,
+                (iconCoordX * IconHelper.ICON_RESOLUTION),
+                (iconCoordY * IconHelper.ICON_RESOLUTION),
+                (int) (IconHelper.ICON_RESOLUTION * scale),
+                (int) (IconHelper.ICON_RESOLUTION * scale),
+                (1f/(IconHelper.ICON_RESOLUTION * IconHelper.ICON_ATLAS_WIDTH_TILES)) * (1/scale));
     }
 }

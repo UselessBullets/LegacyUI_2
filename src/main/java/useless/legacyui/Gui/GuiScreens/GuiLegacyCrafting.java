@@ -4,14 +4,17 @@ import net.minecraft.client.gui.GuiContainer;
 import net.minecraft.core.player.inventory.Container;
 import net.minecraft.core.player.inventory.ContainerWorkbench;
 import net.minecraft.core.player.inventory.InventoryPlayer;
+import net.minecraft.core.player.inventory.slot.Slot;
 import net.minecraft.core.world.World;
+import useless.legacyui.Gui.Containers.LegacyContainerCrafting;
+import useless.prismaticlibe.gui.slot.SlotResizable;
 
 public class GuiLegacyCrafting extends GuiContainer {
     protected int craftingSize;
     private static int GUIx;
     private static int GUIy;
     public GuiLegacyCrafting(InventoryPlayer inventoryplayer, World world, int x, int y, int z, int craftingSize) {
-        super(new ContainerWorkbench(inventoryplayer, world, x, y, z));
+        super(new LegacyContainerCrafting(inventoryplayer, world, x, y, z, craftingSize));
         this.craftingSize = craftingSize;
     }
     public void initGui() {
@@ -30,6 +33,6 @@ public class GuiLegacyCrafting extends GuiContainer {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick) {
         UtilGui.bindTexture("/assets/legacyui/gui/legacycrafting.png");
-        UtilGui.drawTexturedModalRect(this, GUIx, GUIy, 0,0, this.xSize, this.ySize, 1/512f);
+        UtilGui.drawTexturedModalRect(this, GUIx, GUIy, 0,0, this.xSize, this.ySize, 1/512f); // Render Background
     }
 }

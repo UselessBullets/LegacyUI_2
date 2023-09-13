@@ -7,29 +7,61 @@ import net.minecraft.client.render.Lighting;
 import net.minecraft.core.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
 import useless.legacyui.Mixins.GuiInventoryAccessor;
+import useless.prismaticlibe.gui.GuiAuditoryButtons;
 
 public class GuiLegacyInventory extends GuiInventory {
     private static int GUIx;
     private static int GUIy;
+    protected GuiAuditoryButtons craftButton;
     public GuiLegacyInventory(EntityPlayer player) {
         super(player);
     }
     public void initGui() {
         super.initGui();
-        GuiButton armorButton = ((GuiInventoryAccessor)this).getArmorButton();
-        armorButton.xPosition += 44;
-        armorButton.yPosition -= 5;
+
+        // Setup size variables
         xSize = 176;
         ySize = 176;
         GUIx = (this.width - this.xSize) / 2;
         GUIy = (this.height - this.ySize) / 2;
+
+        // Offset Armor Button
+        GuiButton armorButton = ((GuiInventoryAccessor)this).getArmorButton();
+        armorButton.xPosition += 44;
+        armorButton.yPosition -= 5;
+
+        // Create Crafting Button
+        craftButton = new GuiAuditoryButtons(10, GUIx + 138, GUIy + 33, 20, 21, "");
+        craftButton.setMuted(true);
+        craftButton.visible = false;
+        controlList.add(craftButton);
+
+    }
+    protected void buttonPressed(GuiButton guibutton) {
+        super.buttonPressed(guibutton);
+        if (guibutton == craftButton){
+            openCrafting();
+        }
+    }
+    protected void openCrafting(){
+        this.onGuiClosed(); //TODO Make it open the crafting GUI
+        mc.currentScreen = null;
+    }
+    //
+    // Rendering
+    //
+    public void drawScreen(int x, int y, float renderPartialTicks) {
+        super.drawScreen(x,y,renderPartialTicks);
+
+        bindTexture("/assets/legacyui/gui/legacyinventory.png");
+        this.drawTexturedModalRect(craftButton.xPosition, craftButton.yPosition, 177, craftButton.isHovered(x,y) ? 77:54, craftButton.width, craftButton.height); // Crafting Button Render
+
     }
     protected void drawGuiContainerForegroundLayer() {}
     protected void drawGuiContainerBackgroundLayer(float f) {
-        int inventoryTex = this.mc.renderEngine.getTexture("/assets/legacyui/gui/legacyinventory.png");
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        this.mc.renderEngine.bindTexture(inventoryTex);
+        bindTexture("/assets/legacyui/gui/legacyinventory.png");
         this.drawTexturedModalRect(GUIx, GUIy, 0, 0, this.xSize, this.ySize);
+
         renderPlayerDoll();
     }
     private void renderPlayerDoll(){
@@ -64,5 +96,10 @@ public class GuiLegacyInventory extends GuiInventory {
         GL11.glPopMatrix();
         Lighting.disable();
         GL11.glDisable(32826);
+    }
+    private void bindTexture(String texture){
+        int inventoryTex = this.mc.renderEngine.getTexture(texture);
+        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        this.mc.renderEngine.bindTexture(inventoryTex);
     }
 }

@@ -2,6 +2,7 @@ package useless.legacyui.Gui.Containers;
 
 import net.minecraft.core.InventoryAction;
 import net.minecraft.core.block.Block;
+import net.minecraft.core.crafting.CraftingManager;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.player.inventory.*;
 import net.minecraft.core.player.inventory.slot.Slot;
@@ -14,7 +15,7 @@ import useless.prismaticlibe.gui.slot.SlotResizable;
 import java.util.List;
 
 public class LegacyContainerCrafting extends Container {
-    public InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
+    public InventoryCrafting craftMatrix;
     public IInventory craftResult = new InventoryCraftResult();
     private World world;
     private int x;
@@ -22,7 +23,26 @@ public class LegacyContainerCrafting extends Container {
     private int z;
     private int craftingSize;
     private InventoryPlayer inventoryPlayer;
+    public LegacyContainerCrafting(InventoryPlayer inventoryplayer, int craftingSize) {
+        if (craftingSize <= 4){
+            craftMatrix = new InventoryCrafting(this, 2, 2);
+        } else {
+            craftMatrix = new InventoryCrafting(this, 3, 3);
+        }
+        this.world = null;
+        this.x = 0;
+        this.y = 0;
+        this.z = 0;
+        this.craftingSize = craftingSize;
+        this.inventoryPlayer = inventoryplayer;
+        craftingSlots();
+    }
     public LegacyContainerCrafting(InventoryPlayer inventoryplayer, World world, int x, int y, int z, int craftingSize) {
+        if (craftingSize <= 4){
+            craftMatrix = new InventoryCrafting(this, 2, 2);
+        } else {
+            craftMatrix = new InventoryCrafting(this, 3, 3);
+        }
         this.world = world;
         this.x = x;
         this.y = y;
@@ -32,7 +52,6 @@ public class LegacyContainerCrafting extends Container {
         craftingSlots();
     }
     public void craftingSlots() {
-        inventorySlots.clear();
         this.addSlot(new SlotCrafting(this.inventoryPlayer.player, this.craftMatrix, this.craftResult, 0, 107, 127));
         int baseIterator;
         int subIterator;
@@ -41,7 +60,7 @@ public class LegacyContainerCrafting extends Container {
             // 2x2 Crafting
             for (baseIterator = 0; baseIterator < 2; ++baseIterator) {
                 for (subIterator = 0; subIterator < 2; ++subIterator) {
-                    this.addSlot(new Slot(this.craftMatrix, subIterator + baseIterator * 3, 29 + subIterator * 18, 118 + baseIterator * 18));
+                    this.addSlot(new Slot(this.craftMatrix, subIterator + baseIterator * 2, 29 + subIterator * 18, 118 + baseIterator * 18));
                 }
             }
             for (baseIterator = 0; baseIterator < 4; ++baseIterator) {
@@ -68,6 +87,9 @@ public class LegacyContainerCrafting extends Container {
         }
 
         this.onCraftMatrixChanged(this.craftMatrix);
+    }
+    public void onCraftMatrixChanged(IInventory iinventory) {
+        this.craftResult.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftMatrix));
     }
     public boolean isUsableByPlayer(EntityPlayer entityplayer) {
         if (craftingSize <=4 ){ // Inventory Crafting

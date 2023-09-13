@@ -22,7 +22,7 @@ public class MinecraftMixin {
         if (thePlayer.getGamemode() == Gamemode.creative && ModSettings.Gui.EnableLegacyInventoryCreative()){
             cir.setReturnValue(new GuiInventoryCreative(thePlayer));
         }
-        if (ModSettings.Gui.EnableLegacyInventorySurvival()){
+        if (thePlayer.getGamemode() == Gamemode.survival && ModSettings.Gui.EnableLegacyInventorySurvival()){
             cir.setReturnValue(new GuiLegacyInventory(thePlayer));
         }
     }

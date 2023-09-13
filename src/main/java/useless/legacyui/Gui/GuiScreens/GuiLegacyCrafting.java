@@ -17,6 +17,10 @@ public class GuiLegacyCrafting extends GuiContainer {
     protected int craftingSize;
     private static int GUIx;
     private static int GUIy;
+    public GuiLegacyCrafting(InventoryPlayer inventoryplayer, int craftingSize){
+        super((new LegacyContainerCrafting(inventoryplayer, craftingSize)));
+        this.craftingSize = craftingSize;
+    }
     public GuiLegacyCrafting(InventoryPlayer inventoryplayer, World world, int x, int y, int z, int craftingSize) {
         super(new LegacyContainerCrafting(inventoryplayer, world, x, y, z, craftingSize));
         this.craftingSize = craftingSize;

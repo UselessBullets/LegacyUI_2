@@ -13,6 +13,6 @@ import useless.legacyui.Gui.Containers.LegacyContainerPlayerCreative;
 public class GamemodeCreativeMixin {
     @Inject(method = "getContainer(Lnet/minecraft/core/player/inventory/InventoryPlayer;Z)Lnet/minecraft/core/player/inventory/ContainerPlayer;", at = @At("RETURN"), cancellable = true)
     private void returnModdedContainer(InventoryPlayer inventory, boolean isMultiplayer, CallbackInfoReturnable<ContainerPlayer> cir){
-        //cir.setReturnValue(new LegacyContainerPlayerCreative(inventory, isMultiplayer));
+        cir.setReturnValue(new LegacyContainerPlayerCreative(inventory, isMultiplayer));
     }
 }

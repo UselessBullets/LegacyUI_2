@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import useless.legacyui.Gui.GuiScreens.GuiLegacyCrafting;
+import useless.legacyui.ModSettings;
 
 @Mixin(value = EntityPlayerSP.class)
 public class EntityPlayerSPMixin{
@@ -24,7 +25,9 @@ public class EntityPlayerSPMixin{
     public World world = ((EntityPlayer)(Object)this).world;
     @Inject(method = "displayGUIWorkbench(III)V", at = @At("HEAD"), cancellable = true)
     private void displayLegacyCrafting(int x, int y, int z, CallbackInfo ci){
-        mc.displayGuiScreen(new GuiLegacyCrafting(inventory, world, x, y, z, 9));
-        ci.cancel();
+        if (ModSettings.Gui.EnableLegacyCrafting()){
+            mc.displayGuiScreen(new GuiLegacyCrafting(inventory, world, x, y, z, 9));
+            ci.cancel();
+        }
     }
 }

@@ -3,6 +3,8 @@ package useless.legacyui;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import turniplabs.halplibe.HalpLibe;
+import turniplabs.halplibe.helper.TextureHelper;
 
 
 public class LegacyUI implements ModInitializer {

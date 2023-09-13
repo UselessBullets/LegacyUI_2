@@ -1,4 +1,4 @@
-package useless.legacyui.Mixins.Core;
+package useless.legacyui.Mixins;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.EntityPlayerSP;

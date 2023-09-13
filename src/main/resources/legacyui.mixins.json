@@ -7,7 +7,7 @@
 
   ],
   "client": [
-    "Core.MinecraftMixin",
+    "MinecraftMixin",
     "GuiInventoryAccessor",
     "Gamemodes.GamemodeSurvivalMixin"
   ],

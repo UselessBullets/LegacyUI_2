@@ -51,7 +51,7 @@ public class GuiLegacyInventory extends GuiInventory {
     public void drawScreen(int x, int y, float renderPartialTicks) {
         super.drawScreen(x,y,renderPartialTicks);
 
-        bindTexture("/assets/legacyui/gui/legacyinventory.png");
+        UtilGui.bindTexture("/assets/legacyui/gui/legacyinventory.png");
         this.drawTexturedModalRect(craftButton.xPosition, craftButton.yPosition, 177, craftButton.isHovered(x,y) ? 77:54, craftButton.width, craftButton.height); // Crafting Button Render
 
     }
@@ -59,7 +59,7 @@ public class GuiLegacyInventory extends GuiInventory {
         drawStringNoShadow(fontRenderer, "Inventory",8, 82, ModSettings.Colors.GuiLabelColor());
     }
     protected void drawGuiContainerBackgroundLayer(float f) {
-        bindTexture("/assets/legacyui/gui/legacyinventory.png");
+        UtilGui.bindTexture("/assets/legacyui/gui/legacyinventory.png");
         this.drawTexturedModalRect(GUIx, GUIy, 0, 0, this.xSize, this.ySize);
 
         renderPlayerDoll();
@@ -96,10 +96,5 @@ public class GuiLegacyInventory extends GuiInventory {
         GL11.glPopMatrix();
         Lighting.disable();
         GL11.glDisable(32826);
-    }
-    private void bindTexture(String texture){
-        int inventoryTex = this.mc.renderEngine.getTexture(texture);
-        GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-        this.mc.renderEngine.bindTexture(inventoryTex);
     }
 }

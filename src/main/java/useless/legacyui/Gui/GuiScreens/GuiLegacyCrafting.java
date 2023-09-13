@@ -43,6 +43,11 @@ public class GuiLegacyCrafting extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(float partialTick) {
         UtilGui.bindTexture("/assets/legacyui/gui/legacycrafting.png");
         UtilGui.drawTexturedModalRect(this, GUIx, GUIy, 0,0, this.xSize, this.ySize, 1/512f); // Render Background
+
+        if (craftingSize <= 4){
+            UtilGui.drawTexturedModalRect(this, GUIx + 19, GUIy + 108, 61, 175, 54, 54, 1/512f);
+        }
+
         UtilGui.bindTexture("/assets/legacyui/gui/icons.png");
         for (int i = 0; i < 8; i++) {
             UtilGui.drawIconTexture(this, GUIx + 5 + 34*i, GUIy + 2, i+1,0, 0.75f); // Render Icon

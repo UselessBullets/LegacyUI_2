@@ -6,6 +6,7 @@ import net.minecraft.client.render.EntityRenderDispatcher;
 import net.minecraft.client.render.Lighting;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.lang.I18n;
+import net.minecraft.core.player.inventory.ContainerPlayer;
 import org.lwjgl.opengl.GL11;
 import useless.legacyui.LegacyUI;
 import useless.legacyui.Mixins.GuiInventoryAccessor;
@@ -16,8 +17,10 @@ public class GuiLegacyInventory extends GuiInventory {
     private static int GUIx;
     private static int GUIy;
     protected GuiAuditoryButtons craftButton;
+    protected EntityPlayer player;
     public GuiLegacyInventory(EntityPlayer player) {
         super(player);
+        this.player = player;
     }
     public void initGui() {
         super.initGui();
@@ -48,7 +51,8 @@ public class GuiLegacyInventory extends GuiInventory {
     }
     protected void openCrafting(){
         this.onGuiClosed(); //TODO Make it open the crafting GUI
-        mc.currentScreen = null;
+        ContainerPlayer containerPlayer = (ContainerPlayer)player.inventorySlots;
+        mc.displayGuiScreen(new GuiLegacyCrafting(player.inventory, player.world, 0,0,0, 4, containerPlayer.craftMatrix, containerPlayer.craftResult));
     }
     public void drawScreen(int x, int y, float renderPartialTicks) {
         super.drawScreen(x,y,renderPartialTicks);
@@ -63,7 +67,6 @@ public class GuiLegacyInventory extends GuiInventory {
     protected void drawGuiContainerBackgroundLayer(float f) {
         UtilGui.bindTexture("/assets/legacyui/gui/legacyinventory.png");
         this.drawTexturedModalRect(GUIx, GUIy, 0, 0, this.xSize, this.ySize);
-
         renderPlayerDoll();
     }
     private void renderPlayerDoll(){

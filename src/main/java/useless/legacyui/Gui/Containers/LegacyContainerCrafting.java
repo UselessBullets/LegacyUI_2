@@ -5,8 +5,10 @@ import net.minecraft.core.block.Block;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.player.inventory.*;
 import net.minecraft.core.player.inventory.slot.Slot;
+import net.minecraft.core.player.inventory.slot.SlotArmor;
 import net.minecraft.core.player.inventory.slot.SlotCrafting;
 import net.minecraft.core.world.World;
+import useless.legacyui.Gui.Slots.SlotNull;
 import useless.prismaticlibe.gui.slot.SlotResizable;
 
 import java.util.List;
@@ -42,6 +44,9 @@ public class LegacyContainerCrafting extends Container {
                     this.addSlot(new Slot(this.craftMatrix, subIterator + baseIterator * 3, 29 + subIterator * 18, 118 + baseIterator * 18));
                 }
             }
+            for (baseIterator = 0; baseIterator < 4; ++baseIterator) {
+                this.addSlot(new SlotNull(inventoryPlayer, inventoryPlayer.getSizeInventory() - 1 - baseIterator, -5000, -5000));
+            }
         }
         else {
             // 3x3 Crafting
@@ -74,43 +79,88 @@ public class LegacyContainerCrafting extends Container {
         return entityplayer.distanceToSqr((double)this.x + 0.5, (double)this.y + 0.5, (double)this.z + 0.5) <= 64.0; // Is close enough to table
     }
     public List<Integer> getMoveSlots(InventoryAction action, Slot slot, int target, EntityPlayer player) {
-        if (slot.id == 0) {
-            return this.getSlots(0, 1, false);
-        }
-        if (slot.id >= 1 && slot.id < 9) {
-            return this.getSlots(1, 9, false);
-        }
-        if (action == InventoryAction.MOVE_SIMILAR) {
-            if (slot.id >= 10 && slot.id <= 45) {
-                return this.getSlots(10, 36, false);
+        if (craftingSize > 4){
+            if (slot.id == 0) {
+                return this.getSlots(0, 1, false);
             }
-        } else {
-            if (slot.id >= 10 && slot.id <= 36) {
-                return this.getSlots(10, 27, false);
-            }
-            if (slot.id >= 37 && slot.id <= 45) {
-                return this.getSlots(37, 9, false);
-            }
-        }
-        return null;
-    }
-    public List<Integer> getTargetSlots(InventoryAction action, Slot slot, int target, EntityPlayer player) {
-        if (slot.id >= 10 && slot.id <= 45) {
-            if (target == 1) {
+            if (slot.id >= 1 && slot.id < 9) {
                 return this.getSlots(1, 9, false);
             }
-            if (slot.id >= 10 && slot.id <= 36) {
-                return this.getSlots(37, 9, false);
-            }
-            if (slot.id >= 37 && slot.id <= 45) {
-                return this.getSlots(10, 27, false);
+            if (action == InventoryAction.MOVE_SIMILAR) {
+                if (slot.id >= 10 && slot.id <= 45) {
+                    return this.getSlots(10, 36, false);
+                }
+            } else {
+                if (slot.id >= 10 && slot.id <= 36) {
+                    return this.getSlots(10, 27, false);
+                }
+                if (slot.id >= 37 && slot.id <= 45) {
+                    return this.getSlots(37, 9, false);
+                }
             }
         } else {
             if (slot.id == 0) {
-                return this.getSlots(10, 36, true);
+                return this.getSlots(0, 1, false);
             }
-            return this.getSlots(10, 36, false);
+            if (slot.id >= 1 && slot.id <= 4) {
+                return this.getSlots(1, 4, false);
+            }
+            if (slot.id >= 5 && slot.id <= 8) {
+                return this.getSlots(5, 4, false);
+            }
+            if (action == InventoryAction.MOVE_SIMILAR) {
+                if (slot.id >= 9 && slot.id <= 44) {
+                    return this.getSlots(9, 36, false);
+                }
+            } else {
+                if (slot.id >= 9 && slot.id <= 35) {
+                    return this.getSlots(9, 27, false);
+                }
+                if (slot.id >= 36 && slot.id <= 44) {
+                    return this.getSlots(36, 9, false);
+                }
+            }
         }
         return null;
+
+    }
+    public List<Integer> getTargetSlots(InventoryAction action, Slot slot, int target, EntityPlayer player) {
+        if (craftingSize > 4){
+            if (slot.id >= 10 && slot.id <= 45) {
+                if (target == 1) {
+                    return this.getSlots(1, 9, false);
+                }
+                if (slot.id >= 10 && slot.id <= 36) {
+                    return this.getSlots(37, 9, false);
+                }
+                if (slot.id >= 37 && slot.id <= 45) {
+                    return this.getSlots(10, 27, false);
+                }
+            } else {
+                if (slot.id == 0) {
+                    return this.getSlots(10, 36, true);
+                }
+                return this.getSlots(10, 36, false);
+            }
+            return null;
+        } {
+            if (slot.id >= 9 && slot.id <= 44) {
+                if (target == 1) {
+                    return this.getSlots(1, 4, false);
+                }
+                if (target == 2) {
+                    return this.getSlots(5, 4, false);
+                }
+                if (slot.id < 36) {
+                    return this.getSlots(36, 9, false);
+                }
+                return this.getSlots(9, 27, false);
+            }
+            if (slot.id == 0) {
+                return this.getSlots(9, 36, true);
+            }
+            return this.getSlots(9, 36, false);
+        }
+
     }
 }

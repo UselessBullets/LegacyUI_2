@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import useless.legacyui.Gui.Containers.GuiScreens.GuiLegacyInventory;
+import useless.legacyui.Gui.GuiScreens.GuiLegacyInventory;
 
 @Mixin(value = Minecraft.class, remap = false)
 public class MinecraftMixin {

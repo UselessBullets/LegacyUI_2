@@ -1,4 +1,4 @@
-package useless.legacyui.Gui.Containers.GuiScreens;
+package useless.legacyui.Gui.GuiScreens;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiInventory;
@@ -6,7 +6,9 @@ import net.minecraft.client.render.EntityRenderDispatcher;
 import net.minecraft.client.render.Lighting;
 import net.minecraft.core.entity.player.EntityPlayer;
 import org.lwjgl.opengl.GL11;
+import useless.legacyui.LegacyUI;
 import useless.legacyui.Mixins.GuiInventoryAccessor;
+import useless.legacyui.ModSettings;
 import useless.prismaticlibe.gui.GuiAuditoryButtons;
 
 public class GuiLegacyInventory extends GuiInventory {
@@ -47,9 +49,6 @@ public class GuiLegacyInventory extends GuiInventory {
         this.onGuiClosed(); //TODO Make it open the crafting GUI
         mc.currentScreen = null;
     }
-    //
-    // Rendering
-    //
     public void drawScreen(int x, int y, float renderPartialTicks) {
         super.drawScreen(x,y,renderPartialTicks);
 

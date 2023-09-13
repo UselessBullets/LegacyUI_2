@@ -2,16 +2,11 @@ package useless.legacyui.Gui.Containers;
 
 import net.minecraft.core.InventoryAction;
 import net.minecraft.core.entity.player.EntityPlayer;
-import net.minecraft.core.item.Item;
-import net.minecraft.core.item.ItemStack;
-import net.minecraft.core.player.inventory.Container;
 import net.minecraft.core.player.inventory.ContainerPlayer;
 import net.minecraft.core.player.inventory.InventoryPlayer;
 import net.minecraft.core.player.inventory.slot.Slot;
 import net.minecraft.core.player.inventory.slot.SlotArmor;
-import net.minecraft.core.player.inventory.slot.SlotCrafting;
-import useless.legacyui.Gui.Containers.Slot.SlotNull;
-import useless.prismaticlibe.gui.slot.SlotCraftingDisplay;
+import useless.legacyui.Gui.Slots.SlotNull;
 
 import java.util.List;
 

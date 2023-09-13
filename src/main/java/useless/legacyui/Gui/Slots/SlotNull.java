@@ -1,9 +1,7 @@
-package useless.legacyui.Gui.Containers.Slot;
+package useless.legacyui.Gui.Slots;
 
-import net.minecraft.core.achievement.stat.StatList;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.player.inventory.IInventory;
-import net.minecraft.core.player.inventory.InventoryPlayer;
 import net.minecraft.core.player.inventory.slot.Slot;
 
 public class SlotNull extends Slot {

@@ -18,7 +18,10 @@ public class ModSettings {
         props.setProperty("GuiBackgroundColor", "90101010"); //
         props.setProperty("OverrideLabelModColor", "false"); //
         props.setProperty("UseLegacySounds", "true"); //
-        props.setProperty("HideHotbarInGUIs", "true"); // 
+        props.setProperty("HideHotbarInGUIs", "true"); //
+        props.setProperty("EnableLegacyCrafting", "true");
+        props.setProperty("EnableLegacyInventorySurvival", "true");
+        props.setProperty("EnableLegacyInventoryCreative", "true");
         config = new ConfigHandler(LegacyUI.MOD_ID, props);
     }
     public static class Gui {
@@ -26,6 +29,9 @@ public class ModSettings {
         private static final boolean hideHotbarInGUIs = config.getBoolean("HideHotbarInGUIs");
         private static final boolean experimentalQuickStackFix = config.getBoolean("ExperimentalQuickStackFix");
         private static final int experimentalQuickStackFixDelay = config.getInt("ExperimentalQuickStackFixDelay");
+        private static final boolean enableLegacyCrafting = config.getBoolean("EnableLegacyCrafting");
+        private static final boolean enableLegacyInventorySurvival = config.getBoolean("EnableLegacyInventorySurvival");
+        private static final boolean enableLegacyInventoryCreative = config.getBoolean("EnableLegacyInventoryCreative");
         public static boolean HideUndiscoveredItems(){
             return hideUndiscoveredItems;
         }
@@ -34,6 +40,15 @@ public class ModSettings {
         }
         public static boolean ExperimentalQuickStackFix(){return experimentalQuickStackFix;}
         public static int ExperimentalQuickStackFixDelay(){return experimentalQuickStackFixDelay;}
+        public static boolean EnableLegacyCrafting(){
+            return enableLegacyCrafting;
+        }
+        public static boolean EnableLegacyInventorySurvival(){
+            return enableLegacyInventorySurvival;
+        }
+        public static boolean EnableLegacyInventoryCreative(){
+            return enableLegacyInventoryCreative;
+        }
     }
     public static class Colors {
         private static final boolean overrideLabelModColor = config.getBoolean("OverrideLabelModColor");

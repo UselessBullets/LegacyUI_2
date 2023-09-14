@@ -7,9 +7,11 @@
 
   ],
   "client": [
-    "MinecraftMixin",
     "GuiInventoryAccessor",
-    "Gamemodes.GamemodeSurvivalMixin"
+    "MinecraftMixin",
+    "Gamemodes.GamemodeSurvivalMixin",
+    "EntityPlayerSPMixin",
+    "GuiContainerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

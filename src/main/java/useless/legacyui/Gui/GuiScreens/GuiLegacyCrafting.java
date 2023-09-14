@@ -1,6 +1,8 @@
 package useless.legacyui.Gui.GuiScreens;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiContainer;
+import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.lang.I18n;
 import net.minecraft.core.player.inventory.InventoryPlayer;
 import net.minecraft.core.world.World;
@@ -14,14 +16,21 @@ public class GuiLegacyCrafting extends GuiContainer {
     protected int craftingSize;
     private static int GUIx;
     private static int GUIy;
+    private EntityPlayer player;
     public static int currentTab = 0;
-    public GuiLegacyCrafting(InventoryPlayer inventoryplayer, int craftingSize){
-        super((new LegacyContainerCrafting(inventoryplayer, craftingSize)));
+    public GuiLegacyCrafting(EntityPlayer player, int craftingSize){
+        super((new LegacyContainerCrafting(player.inventory, craftingSize)));
         this.craftingSize = craftingSize;
+        this.player = player;
+        this.mc = Minecraft.getMinecraft(this);
+        setContainerRecipes();
     }
-    public GuiLegacyCrafting(InventoryPlayer inventoryplayer, World world, int x, int y, int z, int craftingSize) {
-        super(new LegacyContainerCrafting(inventoryplayer, world, x, y, z, craftingSize));
+    public GuiLegacyCrafting(EntityPlayer player, int x, int y, int z, int craftingSize) {
+        super(new LegacyContainerCrafting(player.inventory, player.world, x, y, z, craftingSize));
         this.craftingSize = craftingSize;
+        this.player = player;
+        this.mc = Minecraft.getMinecraft(this);
+        setContainerRecipes();
     }
     public void scrollTab(int direction){
         if (direction > 0){
@@ -44,6 +53,8 @@ public class GuiLegacyCrafting extends GuiContainer {
         } else if (currentTab < 0){
             currentTab += tabAmount;
         }
+        currentTab = Math.min(currentTab, LegacyCategoryManager.recipeCategories.size()-1);
+        setContainerRecipes();
     }
     public void handleInputs(){
         boolean shifted = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
@@ -62,13 +73,17 @@ public class GuiLegacyCrafting extends GuiContainer {
         super.initGui();
 
         // Setup size variables
-        this.xSize = 273; // width of texture plus the 17px strip that was cut off
+        this.xSize = 273; // width of Gui window
         this.ySize = 175; // height of Gui window
         GUIx = (this.width - this.xSize) / 2;
         GUIy = (this.height - this.ySize) / 2;
 
         // Static Initialization
         currentTab = 0;
+    }
+    public void setContainerRecipes(){
+
+        ((LegacyContainerCrafting)inventorySlots).setRecipes(player, mc.statFileWriter, currentTab, true);
     }
     public void onGuiClosed() {
         super.onGuiClosed();
@@ -96,7 +111,7 @@ public class GuiLegacyCrafting extends GuiContainer {
         }
 
         UtilGui.bindTexture("/assets/legacyui/gui/icons.png");
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < Math.min(LegacyCategoryManager.recipeCategories.size(), 8); i++) {
             UtilGui.drawIconTexture(this, GUIx + 5 + (tabWidth - 1) * i, GUIy + 2, LegacyCategoryManager.recipeCategories.get(i).iconCoordinate, 0.75f); // Render Icon
         }
 

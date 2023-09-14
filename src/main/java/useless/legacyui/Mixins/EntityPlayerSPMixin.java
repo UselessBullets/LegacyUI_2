@@ -26,7 +26,7 @@ public class EntityPlayerSPMixin{
     @Inject(method = "displayGUIWorkbench(III)V", at = @At("HEAD"), cancellable = true)
     private void displayLegacyCrafting(int x, int y, int z, CallbackInfo ci){
         if (ModSettings.Gui.EnableLegacyCrafting()){
-            mc.displayGuiScreen(new GuiLegacyCrafting(inventory, world, x, y, z, 9));
+            mc.displayGuiScreen(new GuiLegacyCrafting(mc.thePlayer, x, y, z, 9));
             ci.cancel();
         }
     }

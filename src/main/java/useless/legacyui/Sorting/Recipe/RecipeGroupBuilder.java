@@ -1,4 +1,4 @@
-package useless.legacyui.Sorting;
+package useless.legacyui.Sorting.Recipe;
 
 import net.minecraft.core.block.Block;
 import net.minecraft.core.crafting.CraftingManager;
@@ -10,20 +10,18 @@ import net.minecraft.core.item.ItemStack;
 import useless.legacyui.LegacyUI;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class RecipeGroupBuilder {
-    private static CraftingManager manager = CraftingManager.getInstance();
-    private static List<IRecipe> allRecipes = manager.getRecipeList();
-    private static List<IRecipe> unusedRecipes = new ArrayList<>(allRecipes);
+    private static final List<IRecipe> allRecipes = CraftingManager.getInstance().getRecipeList();
+    private static final List<IRecipe> unusedRecipes = new ArrayList<>(allRecipes);
     private Boolean isDebug = false;
-    private List<Class> inclusiveClassList = new ArrayList<>();
-    private List<ItemStack> inclusiveItemList = new ArrayList<>();
-    private List<String> inclusiveKeywordList = new ArrayList<>();
-    private List<Class> exclusiveClassList = new ArrayList<>();
-    private List<ItemStack> exclusiveItemList = new ArrayList<>();
-    private List<String> exclusiveKeywordList = new ArrayList<>();
+    private final List<Class> inclusiveClassList = new ArrayList<>();
+    private final List<ItemStack> inclusiveItemList = new ArrayList<>();
+    private final List<String> inclusiveKeywordList = new ArrayList<>();
+    private final List<Class> exclusiveClassList = new ArrayList<>();
+    private final List<ItemStack> exclusiveItemList = new ArrayList<>();
+    private final List<String> exclusiveKeywordList = new ArrayList<>();
     public RecipeGroupBuilder addKeyword(String keyword){
         return addKeyword(keyword, false);
     }
@@ -177,7 +175,7 @@ public class RecipeGroupBuilder {
             }
         }
         for (int i = 0; i < allRecipes.size(); i++) {
-            IRecipe currentRecipe = unused_copy.get(i);
+            IRecipe currentRecipe = allRecipes.get(i);
             if (currentRecipe instanceof RecipeShaped || currentRecipe instanceof RecipeShapeless){
                 ItemStack recipeItem = currentRecipe.getRecipeOutput();
                 boolean foundMatch = false;

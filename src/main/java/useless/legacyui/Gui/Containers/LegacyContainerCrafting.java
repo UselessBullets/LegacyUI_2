@@ -12,6 +12,7 @@ import net.minecraft.core.player.inventory.*;
 import net.minecraft.core.player.inventory.slot.Slot;
 import net.minecraft.core.player.inventory.slot.SlotCrafting;
 import net.minecraft.core.world.World;
+import useless.legacyui.Gui.GuiScreens.GuiLegacyCrafting;
 import useless.legacyui.Gui.Slots.SlotNull;
 import useless.legacyui.Helper.InventoryHelper;
 import useless.legacyui.LegacyUI;
@@ -98,11 +99,14 @@ public class LegacyContainerCrafting extends Container {
 
         this.onCraftMatrixChanged(this.craftMatrix);
     }
-    public void setRecipes(EntityPlayer player, StatFileWriter statWriter, int categoryIndex, boolean showCraftingPreview){
+    public void setRecipes(EntityPlayer player, StatFileWriter statWriter, boolean showCraftingPreview){
         boolean isInInventory = craftingSize <= 4;
+
+        int currentSlotId = GuiLegacyCrafting.currentSlot;
+        int currentScrollAmount = GuiLegacyCrafting.currentScroll;
+        int categoryIndex = GuiLegacyCrafting.currentTab;
+
         RecipeCategory category = LegacyCategoryManager.recipeCategories.get(categoryIndex);
-        int currentSlotId = 0;
-        int currentScrollAmount = 0;
 
         for (RecipeGroup group : category.getRecipeGroups(isInInventory)){
             LegacyUI.LOGGER.debug("CategoryGroup: " + group.getContainer(0, isInInventory).inventorySlots.get(0).getStack().getItem().getKey());

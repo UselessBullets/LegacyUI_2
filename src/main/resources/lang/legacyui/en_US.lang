@@ -1,3 +1,11 @@
 legacyui.guilabel.inventory=Inventory
 legacyui.guilabel.crafting=Crafting
-legacyui.guilabel.categorydefault=Category Name
+legacyui.categories.default=Category Name
+legacyui.categories.basics=Basic Structures
+legacyui.categories.bricks=Stonework
+legacyui.categories.equipment=Equipment
+legacyui.categories.food=Food
+legacyui.categories.redstone=Redstone
+legacyui.categories.travel=Transportation
+legacyui.categories.misc=Miscellaneous
+legacyui.categories.modded=Modded

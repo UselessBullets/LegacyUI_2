@@ -50,7 +50,7 @@ public class GuiLegacyInventory extends GuiInventory {
         }
     }
     protected void openCrafting(){
-        this.onGuiClosed(); //TODO Make it open the crafting GUI
+        this.onGuiClosed();
         mc.displayGuiScreen(new GuiLegacyCrafting(player.inventory, 4));
     }
     public void drawScreen(int x, int y, float renderPartialTicks) {

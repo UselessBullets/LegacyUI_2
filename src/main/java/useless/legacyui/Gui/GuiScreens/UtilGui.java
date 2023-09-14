@@ -25,13 +25,13 @@ public class UtilGui {
         tessellator.draw();
     }
 
-    public static void drawIconTexture(Gui gui, int x, int y, int iconCoordX, int iconCoordY, float scale){
+    public static void drawIconTexture(Gui gui, int x, int y, int[] iconCoord, float scale){
         int width = (int) (IconHelper.ICON_RESOLUTION * scale);
         drawTexturedModalRect(gui,
                 x,
                 y,
-                (iconCoordX * width),
-                (iconCoordY * width),
+                (iconCoord[0] * width),
+                (iconCoord[1] * width),
                 width,
                 width,
                 (1f/(IconHelper.ICON_RESOLUTION * IconHelper.ICON_ATLAS_WIDTH_TILES)) * (1/scale));

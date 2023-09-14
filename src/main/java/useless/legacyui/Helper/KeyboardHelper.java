@@ -1,4 +1,4 @@
-package useless.legacyui;
+package useless.legacyui.Helper;
 
 import org.lwjgl.input.Keyboard;
 

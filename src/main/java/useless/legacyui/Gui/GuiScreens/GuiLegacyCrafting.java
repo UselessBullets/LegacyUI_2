@@ -6,7 +6,7 @@ import net.minecraft.core.player.inventory.InventoryPlayer;
 import net.minecraft.core.world.World;
 import org.lwjgl.input.Keyboard;
 import useless.legacyui.Gui.Containers.LegacyContainerCrafting;
-import useless.legacyui.KeyboardHelper;
+import useless.legacyui.Helper.KeyboardHelper;
 import useless.legacyui.ModSettings;
 import useless.legacyui.Sorting.LegacyCategoryManager;
 

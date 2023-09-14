@@ -1,7 +1,8 @@
-package useless.legacyui;
+package useless.legacyui.Helper;
 
 import turniplabs.halplibe.helper.TextureHelper;
 import turniplabs.halplibe.util.TextureHandler;
+import useless.legacyui.LegacyUI;
 
 import java.util.HashMap;
 import java.util.Map;

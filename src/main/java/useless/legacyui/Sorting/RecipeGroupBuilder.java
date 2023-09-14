@@ -228,13 +228,11 @@ public class RecipeGroupBuilder {
                 }
             }
         }
-        LegacyUI.LOGGER.info("All");
-        printRecipeList(allRecipes);
-        LegacyUI.LOGGER.info("Unused");
-        printRecipeList(unusedRecipes);
-        LegacyUI.LOGGER.info("Group");
-        printRecipeList(recipeGroupRecipes);
-        return new RecipeGroup();
+        if (isDebug){
+            LegacyUI.LOGGER.info("Group");
+            printRecipeList(recipeGroupRecipes);
+        }
+        return new RecipeGroup(recipeGroupRecipes.toArray());
     }
 
     private void printRecipeList(List<IRecipe> recipes){

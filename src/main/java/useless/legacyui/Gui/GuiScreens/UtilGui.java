@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.render.Tessellator;
 import org.lwjgl.opengl.GL11;
-import useless.legacyui.IconHelper;
+import useless.legacyui.Helper.IconHelper;
 
 public class UtilGui {
     public static Minecraft mc = Minecraft.getMinecraft(Minecraft.class);

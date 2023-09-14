@@ -3,7 +3,7 @@ package useless.legacyui.Sorting;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemBucket;
 import net.minecraft.core.item.tool.ItemTool;
-import useless.legacyui.IconHelper;
+import useless.legacyui.Helper.IconHelper;
 import useless.legacyui.LegacyUI;
 
 import java.util.ArrayList;

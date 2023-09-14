@@ -1,20 +1,14 @@
 package useless.legacyui.Gui.GuiScreens;
 
 import net.minecraft.client.gui.GuiContainer;
-import net.minecraft.core.item.Item;
 import net.minecraft.core.lang.I18n;
-import net.minecraft.core.player.inventory.Container;
-import net.minecraft.core.player.inventory.ContainerWorkbench;
 import net.minecraft.core.player.inventory.InventoryPlayer;
-import net.minecraft.core.player.inventory.slot.Slot;
 import net.minecraft.core.world.World;
 import org.lwjgl.input.Keyboard;
 import useless.legacyui.Gui.Containers.LegacyContainerCrafting;
 import useless.legacyui.KeyboardHelper;
-import useless.legacyui.LegacyUI;
 import useless.legacyui.ModSettings;
 import useless.legacyui.Sorting.LegacyCategoryManager;
-import useless.prismaticlibe.gui.slot.SlotResizable;
 
 public class GuiLegacyCrafting extends GuiContainer {
     protected int craftingSize;
@@ -53,12 +47,12 @@ public class GuiLegacyCrafting extends GuiContainer {
     }
     public void handleInputs(){
         boolean shifted = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
-        if (KeyboardHelper.isKeyPressed(mc.gameSettings.keyRight.keyCode()) || KeyboardHelper.isKeyPressed(mc.gameSettings.keyLookRight.keyCode())){
+        if (KeyboardHelper.isKeyPressedThisFrame(mc.gameSettings.keyRight.keyCode()) || KeyboardHelper.isKeyPressedThisFrame(mc.gameSettings.keyLookRight.keyCode())){
             if (shifted){
                 scrollTab(1);
             }
         }
-        if (KeyboardHelper.isKeyPressed(mc.gameSettings.keyLeft.keyCode()) || KeyboardHelper.isKeyPressed(mc.gameSettings.keyLookLeft.keyCode())){
+        if (KeyboardHelper.isKeyPressedThisFrame(mc.gameSettings.keyLeft.keyCode()) || KeyboardHelper.isKeyPressedThisFrame(mc.gameSettings.keyLookLeft.keyCode())){
             if (shifted){
                 scrollTab(-1);
             }

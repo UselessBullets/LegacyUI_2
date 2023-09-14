@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import useless.legacyui.Gui.GuiScreens.GuiLegacyCrafting;
 import useless.legacyui.ModSettings;
 
-@Mixin(value = EntityPlayerSP.class)
+@Mixin(value = EntityPlayerSP.class, remap = false)
 public class EntityPlayerSPMixin{
     @Shadow
     protected Minecraft mc;

@@ -8,7 +8,7 @@ import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.lang.I18n;
 import org.lwjgl.opengl.GL11;
 import useless.legacyui.Gui.Buttons.GuiAuditoryButton;
-import useless.legacyui.Mixins.GuiInventoryAccessor;
+import useless.legacyui.Mixins.Gui.GuiInventoryAccessor;
 import useless.legacyui.ModSettings;
 
 public class GuiLegacyInventory extends GuiInventory {

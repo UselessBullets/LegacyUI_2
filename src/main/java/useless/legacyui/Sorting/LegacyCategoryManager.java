@@ -1,7 +1,7 @@
 package useless.legacyui.Sorting;
 
-import net.minecraft.core.block.Block;
-import net.minecraft.core.item.ItemFood;
+import net.minecraft.core.block.*;
+import net.minecraft.core.item.*;
 import net.minecraft.core.item.tool.*;
 import useless.legacyui.Helper.IconHelper;
 import useless.legacyui.LegacyUI;
@@ -14,9 +14,16 @@ import java.util.List;
 
 public class LegacyCategoryManager {
     public static List<RecipeCategory> recipeCategories = new ArrayList<>();
-    public static void register(){}
+    public static String MOD_ID = LegacyUI.MOD_ID;
+    public static void register(){
+        LegacyCategoryManager.recipeCategories.add(recipeBasics.category);
+        LegacyCategoryManager.recipeCategories.add(recipeBricks.category);
+        LegacyCategoryManager.recipeCategories.add(recipeTools.category);
+        LegacyCategoryManager.recipeCategories.add(recipeFood.category);
+        LegacyCategoryManager.recipeCategories.add(recipeRedstone.category);
+    }
     static {
-        String MOD_ID = LegacyUI.MOD_ID;
+
         /*LegacyCategoryManager.recipeCategories.add(new RecipeCategory(MOD_ID, "basics", IconHelper.getOrCreateIconTexture(MOD_ID, "planks.png")));
         LegacyCategoryManager.recipeCategories.add(new RecipeCategory(MOD_ID, "bricks", IconHelper.getOrCreateIconTexture(MOD_ID, "bricks.png")));
         LegacyCategoryManager.recipeCategories.add(new RecipeCategory(MOD_ID, "equipment", IconHelper.getOrCreateIconTexture(MOD_ID, "tools.png")));
@@ -26,41 +33,153 @@ public class LegacyCategoryManager {
         LegacyCategoryManager.recipeCategories.add(new RecipeCategory(MOD_ID, "misc", IconHelper.getOrCreateIconTexture(MOD_ID, "painting.png")));
         LegacyCategoryManager.recipeCategories.add(new RecipeCategory(MOD_ID, "modded", IconHelper.getOrCreateIconTexture(MOD_ID, "modded.png")));*/
 
-        RecipeGroup pickaxe = new RecipeGroupBuilder()
-                .addClass(ItemToolPickaxe.class)
+    }
+    public static class recipeBasics {
+        public static RecipeGroup planks = new RecipeGroupBuilder()
+                .addItem(Block.planksOak)
+                .addItem(Block.planksOakPainted)
                 .build();
-        RecipeGroup shovel = new RecipeGroupBuilder()
-                .addClass(ItemToolShovel.class)
+        public static RecipeGroup torches = new RecipeGroupBuilder()
+                .addClass(BlockTorch.class)
+                .addItem(Item.stick)
                 .build();
-        RecipeGroup axe = new RecipeGroupBuilder()
-                .addClass(ItemToolAxe.class)
+        public static RecipeGroup utilityBlocks = new RecipeGroupBuilder()
+                .addItem(Block.jukebox)
+                .addItem(Block.workbench)
+                .addItem(Block.furnaceBlastIdle)
+                .addItem(Block.furnaceStoneIdle)
+                .addItem(Block.trommelIdle)
                 .build();
-        RecipeGroup hoe = new RecipeGroupBuilder()
-                .addClass(ItemToolHoe.class)
+        public static RecipeGroup chest = new RecipeGroupBuilder()
+                .addClass(BlockChest.class)
                 .build();
-        LegacyCategoryManager.recipeCategories.add(new RecipeCategory(
+        public static RecipeGroup bed = new RecipeGroupBuilder()
+                .addItem(Item.bed)
+                .build();
+        public static RecipeGroup fences = new RecipeGroupBuilder()
+                .addClass(BlockFence.class)
+                .build();
+        public static RecipeGroup fencegates = new RecipeGroupBuilder()
+                .addClass(BlockFenceGate.class)
+                .build();
+        public static RecipeCategory category = new RecipeCategory(
                 MOD_ID,
-                "equipment",
-                IconHelper.getOrCreateIconTexture(MOD_ID, "tools.png"),
-                new RecipeGroup[]{pickaxe,shovel,axe,hoe}));
-
-        RecipeGroup food = new RecipeGroupBuilder()
-                .addClass(ItemFood.class)
-                .build();
-        LegacyCategoryManager.recipeCategories.add(new RecipeCategory(
-                MOD_ID,
-                "food",
-                IconHelper.getOrCreateIconTexture(MOD_ID, "health.png"),
-                new RecipeGroup[]{food}));
-
-        RecipeGroup blocks = new RecipeGroupBuilder()
+                "basics",
+                IconHelper.getOrCreateIconTexture(MOD_ID, "planks.png"),
+                new RecipeGroup[]{planks, torches, utilityBlocks, chest, bed, fences, fencegates});
+    }
+    public static class recipeBricks {
+        public static RecipeGroup blocks = new RecipeGroupBuilder()
                 .addClass(Block.class)
                 .addKeyword("tile")
                 .build();
-        LegacyCategoryManager.recipeCategories.add(new RecipeCategory(
+        public static RecipeCategory category = new RecipeCategory(
                 MOD_ID,
                 "bricks",
                 IconHelper.getOrCreateIconTexture(MOD_ID, "bricks.png"),
-                new RecipeGroup[]{blocks}));
+                new RecipeGroup[]{blocks});
+    }
+    public static class recipeTools {
+        public static RecipeGroup pickaxe = new RecipeGroupBuilder()
+                .addClass(ItemToolPickaxe.class)
+                .build();
+        public static RecipeGroup shovel = new RecipeGroupBuilder()
+                .addClass(ItemToolShovel.class)
+                .build();
+        public static RecipeGroup axe = new RecipeGroupBuilder()
+                .addClass(ItemToolAxe.class)
+                .build();
+        public static RecipeGroup hoe = new RecipeGroupBuilder()
+                .addClass(ItemToolHoe.class)
+                .build();
+        public static RecipeGroup sword = new RecipeGroupBuilder()
+                .addClass(ItemToolSword.class)
+                .build();
+        public static RecipeGroup fishing = new RecipeGroupBuilder()
+                .addClass(ItemFishingRod.class)
+                .build();
+        public static RecipeGroup bow = new RecipeGroupBuilder()
+                .addClass(ItemBow.class)
+                .addItem(Item.ammoArrow)
+                .addItem(Item.ammoArrowGold)
+                .addItem(Item.ammoArrowPurple)
+                .build();
+        public static RecipeGroup handcannon = new RecipeGroupBuilder()
+                .addClass(ItemHandCannonLoaded.class)
+                .addClass(ItemHandCannonUnloaded.class)
+                .addItem(Item.ammoChargeExplosive)
+                .build();
+        public static RecipeGroup miscTools = new RecipeGroupBuilder()
+                .addClass(ItemFirestriker.class)
+                .addClass(ItemBucket.class)
+                .addClass(ItemBucketEmpty.class)
+                .addClass(ItemLabel.class)
+                .addClass(ItemToolShears.class)
+                .build();
+        public static RecipeGroup toolInfo = new RecipeGroupBuilder()
+                .addItem(Item.toolCompass)
+                .addItem(Item.toolClock)
+                .addItem(Item.toolCalendar)
+                .addItem(Item.map)
+                .build();
+        public static RecipeGroup helmet = new RecipeGroupBuilder()
+                .addKeyword(".helmet.")
+                .build();
+        public static RecipeGroup chestplate = new RecipeGroupBuilder()
+                .addKeyword(".chestplate.")
+                .build();
+        public static RecipeGroup leggings = new RecipeGroupBuilder()
+                .addKeyword(".leggings.")
+                .build();
+        public static RecipeGroup boots = new RecipeGroupBuilder()
+                .addKeyword(".boots.")
+                .build();
+        public static RecipeCategory category = new RecipeCategory(
+                MOD_ID,
+                "equipment",
+                IconHelper.getOrCreateIconTexture(MOD_ID, "tools.png"),
+                new RecipeGroup[]{pickaxe,shovel,axe,hoe,sword,fishing,bow,handcannon,miscTools,toolInfo,helmet,chestplate,leggings,boots});
+    }
+    public static class recipeFood {
+        public static RecipeGroup bread = new RecipeGroupBuilder()
+                .addItem(Item.foodBread)
+                .build();
+        public static RecipeGroup stew = new RecipeGroupBuilder()
+                .addClass(ItemSoup.class)
+                .addItem(Item.bowl)
+                .build();
+        public static RecipeGroup cake = new RecipeGroupBuilder()
+                .addItem(Item.foodCake)
+                .build();
+        public static RecipeGroup cookies = new RecipeGroupBuilder()
+                .addItem(Item.foodCookie)
+                .build();
+        public static RecipeGroup icecream = new RecipeGroupBuilder()
+                .addClass(ItemBucketIceCream.class)
+                .build();
+        public static RecipeGroup apple = new RecipeGroupBuilder()
+                .addItem(Item.foodApple)
+                .addItem(Item.foodAppleGold)
+                .build();
+        public static RecipeGroup sugar = new RecipeGroupBuilder()
+                .addItem(Item.dustSugar)
+                .build();
+        public static RecipeCategory category = new RecipeCategory(
+                MOD_ID,
+                "food",
+                IconHelper.getOrCreateIconTexture(MOD_ID, "health.png"),
+                new RecipeGroup[]{bread,stew,cake,cookies,icecream,apple,sugar});
+    }
+    public static class recipeRedstone {
+        public static RecipeGroup basicRedstone = new RecipeGroupBuilder()
+                .addItem(Item.repeater)
+                .addItem(Item.dustRedstone)
+                .addItem(Block.torchRedstoneIdle)
+                .build();
+        public static RecipeCategory category = new RecipeCategory(
+                MOD_ID,
+                "redstone",
+                IconHelper.getOrCreateIconTexture(MOD_ID, "lever.png"),
+                new RecipeGroup[]{});
     }
 }

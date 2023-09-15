@@ -7,7 +7,7 @@ import net.minecraft.core.player.inventory.ContainerGuidebookRecipeCrafting;
 import useless.legacyui.Helper.InventoryHelper;
 
 public class RecipeCost {
-    private static CraftingManager craftingManager = CraftingManager.getInstance();
+    private static final CraftingManager craftingManager = CraftingManager.getInstance();
     public ItemStack[] itemStacks;
     public int[] quantity;
 
@@ -67,11 +67,11 @@ public class RecipeCost {
 
     @Override
     public String toString() {
-        String returnString = "";
+        StringBuilder returnString = new StringBuilder();
         int i = 0;
         for (ItemStack item: itemStacks) {
-            returnString += item.getItem().getKey() + " | " + quantity[i++] + "\n";
+            returnString.append(item.getItem().getKey()).append(" | ").append(quantity[i++]).append("\n");
         }
-        return returnString;
+        return returnString.toString();
     }
 }

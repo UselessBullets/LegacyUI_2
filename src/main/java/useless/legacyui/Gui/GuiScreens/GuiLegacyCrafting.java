@@ -2,16 +2,16 @@ package useless.legacyui.Gui.GuiScreens;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiContainer;
+import net.minecraft.core.crafting.recipe.IRecipe;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.lang.I18n;
-import net.minecraft.core.player.inventory.InventoryPlayer;
-import net.minecraft.core.world.World;
 import org.lwjgl.input.Keyboard;
 import useless.legacyui.Gui.Containers.LegacyContainerCrafting;
 import useless.legacyui.Helper.KeyboardHelper;
 import useless.legacyui.ModSettings;
 import useless.legacyui.Sorting.LegacyCategoryManager;
 import useless.legacyui.Sorting.Recipe.RecipeCategory;
+import useless.legacyui.Sorting.Recipe.RecipeGroup;
 
 public class GuiLegacyCrafting extends GuiContainer {
     protected int craftingSize;
@@ -21,6 +21,7 @@ public class GuiLegacyCrafting extends GuiContainer {
     public static int currentTab = 0;
     public static int currentScroll = 0;
     public static int currentSlot = 0;
+    private static final int guiTextureWidth = 512;
     public GuiLegacyCrafting(EntityPlayer player, int craftingSize){
         super((new LegacyContainerCrafting(player.inventory, craftingSize)));
         this.craftingSize = craftingSize;
@@ -147,6 +148,8 @@ public class GuiLegacyCrafting extends GuiContainer {
 
         // Static Initialization
         currentTab = 0;
+        currentScroll = 0;
+        currentSlot = 0;
         setContainerRecipes();
     }
     public void setContainerRecipes(){
@@ -161,25 +164,61 @@ public class GuiLegacyCrafting extends GuiContainer {
         super.drawScreen(x, y, renderPartialTicks);
     }
     protected void drawGuiContainerForegroundLayer(){
-        drawStringCenteredNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.inventory"),205, 97, ModSettings.Colors.GuiLabelColor());
-        drawStringCenteredNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.crafting"),73, 97, ModSettings.Colors.GuiLabelColor());
-        drawStringCenteredNoShadow(fontRenderer, LegacyCategoryManager.recipeCategories.get(currentTab).getTranslatedKey(),xSize/2, 36, ModSettings.Colors.GuiLabelColor());
+        UtilGui.bindTexture("/assets/legacyui/gui/legacycrafting.png");
+        drawSelectionCursorForeground();
     }
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTick) {
         UtilGui.bindTexture("/assets/legacyui/gui/legacycrafting.png");
-        UtilGui.drawTexturedModalRect(this, GUIx, GUIy, 0,0, this.xSize, this.ySize, 1/512f); // Render Background
+        UtilGui.drawTexturedModalRect(this, GUIx, GUIy, 0,0, this.xSize, this.ySize, 1f/guiTextureWidth); // Render Background
 
         int tabWidth = 35;
-        UtilGui.drawTexturedModalRect(this, GUIx + (tabWidth - 1) * currentTab, GUIy - 2, 0,175, tabWidth, 30, 1/512f); // Render Selected Tab
+        UtilGui.drawTexturedModalRect(this, GUIx + (tabWidth - 1) * currentTab, GUIy - 2, 0,175, tabWidth, 30, 1f/guiTextureWidth); // Render Selected Tab
 
-        if (isSmall()){
-            UtilGui.drawTexturedModalRect(this, GUIx + 19, GUIy + 108, 61, 175, 54, 54, 1/512f);
+        if (isSmall()){ // 2x2 Crafting overlay
+            UtilGui.drawTexturedModalRect(this, GUIx + 19, GUIy + 108, 61, 175, 54, 54, 1f/guiTextureWidth);
         }
+
+        drawStringCenteredNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.inventory"),GUIx + 205, GUIy + 97, ModSettings.Colors.GuiLabelColor());
+        String craftingString;
+        if (ModSettings.Gui.ShowCraftingItemNamePreview()){
+            if (!currentCategory().isEmpty(isSmall())){
+                IRecipe currentRecipe = (IRecipe) currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall())[currentScroll];
+                craftingString = currentRecipe.getRecipeOutput().getDisplayName();
+            }
+            craftingString = "Null";
+        } else {
+            craftingString = I18n.getInstance().translateKey("legacyui.guilabel.crafting");
+        }
+
+        drawStringCenteredNoShadow(fontRenderer, craftingString,GUIx + 73, GUIy + 97, ModSettings.Colors.GuiLabelColor());
+        drawStringCenteredNoShadow(fontRenderer, LegacyCategoryManager.recipeCategories.get(currentTab).getTranslatedKey(),GUIx + (xSize/2), GUIy + 36, ModSettings.Colors.GuiLabelColor());
+
+        UtilGui.bindTexture("/assets/legacyui/gui/legacycrafting.png");
+        drawSelectionCursorBackground();
 
         UtilGui.bindTexture("/assets/legacyui/gui/icons.png");
         for (int i = 0; i < Math.min(LegacyCategoryManager.recipeCategories.size(), 8); i++) {
             UtilGui.drawIconTexture(this, GUIx + 5 + (tabWidth - 1) * i, GUIy + 2, LegacyCategoryManager.recipeCategories.get(i).iconCoordinate, 0.75f); // Render Icon
+        }
+    }
+    private void drawSelectionCursorForeground(){
+        int x = 8 + 18*currentSlot;
+        int y = 52;
+        if (!currentCategory().isEmpty(isSmall()) && currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall()).length > 1){
+            UtilGui.drawTexturedModalRect(this, x - 1,y,35, 175, 26, 24, 1f/guiTextureWidth);
+            UtilGui.drawTexturedModalRect(this, x - 1,y - 31, 115, 175, 26,31, 1f/guiTextureWidth);
+            UtilGui.drawTexturedModalRect(this, x - 1,y + 24, 141, 175, 26,31, 1f/guiTextureWidth);
+        } else {
+            UtilGui.drawTexturedModalRect(this, x,y, 36, 175, 24, 24, 1f/guiTextureWidth);
+        }
+    }
+    private void drawSelectionCursorBackground(){
+        int x = 12 + 18*currentSlot;
+        int y = 51;
+        if (!currentCategory().isEmpty(isSmall()) && currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall()).length > 1){
+            UtilGui.drawTexturedModalRect(this,GUIx + x - 1,GUIy + y - 17,167, 175, 18, 18, 1f/guiTextureWidth);
+            UtilGui.drawTexturedModalRect(this,GUIx + x - 1,GUIy + y + 25, 167, 175, 18,18, 1f/guiTextureWidth);
         }
 
     }

@@ -22,6 +22,7 @@ public class ModSettings {
         props.setProperty("EnableLegacyCrafting", "true");
         props.setProperty("EnableLegacyInventorySurvival", "true");
         props.setProperty("EnableLegacyInventoryCreative", "true");
+        props.setProperty("ShowCraftingItemNamePreview", "true");
         config = new ConfigHandler(LegacyUI.MOD_ID, props);
     }
     public static class Gui {
@@ -32,6 +33,7 @@ public class ModSettings {
         private static final boolean enableLegacyCrafting = config.getBoolean("EnableLegacyCrafting");
         private static final boolean enableLegacyInventorySurvival = config.getBoolean("EnableLegacyInventorySurvival");
         private static final boolean enableLegacyInventoryCreative = config.getBoolean("EnableLegacyInventoryCreative");
+        private static final boolean showCraftingItemNamePreview = config.getBoolean("ShowCraftingItemNamePreview");
         public static boolean HideUndiscoveredItems(){
             return hideUndiscoveredItems;
         }
@@ -48,6 +50,9 @@ public class ModSettings {
         }
         public static boolean EnableLegacyInventoryCreative(){
             return enableLegacyInventoryCreative;
+        }
+        public static boolean ShowCraftingItemNamePreview(){
+            return showCraftingItemNamePreview;
         }
     }
     public static class Colors {

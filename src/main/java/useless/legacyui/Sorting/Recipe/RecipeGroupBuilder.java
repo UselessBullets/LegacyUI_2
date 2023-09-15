@@ -22,6 +22,17 @@ public class RecipeGroupBuilder {
     private final List<Class> exclusiveClassList = new ArrayList<>();
     private final List<ItemStack> exclusiveItemList = new ArrayList<>();
     private final List<String> exclusiveKeywordList = new ArrayList<>();
+    private final List<ItemStack> excludeItemList = new ArrayList<>();
+    public RecipeGroupBuilder excludeItem(Item item){
+        return excludeItem(new ItemStack(item));
+    }
+    public RecipeGroupBuilder excludeItem(ItemStack stack){
+        if (isDebug){
+            LegacyUI.LOGGER.info(stack.toString());
+        }
+        excludeItemList.add(stack);
+        return this;
+    }
     public RecipeGroupBuilder addKeyword(String keyword){
         return addKeyword(keyword, false);
     }
@@ -36,6 +47,12 @@ public class RecipeGroupBuilder {
             exclusiveKeywordList.add(keyword);
         }
 
+        return this;
+    }
+    public RecipeGroupBuilder addItemsWithMetaRange(Item item, int metaStart, int metaRange, boolean isInclusive){
+        for (int i = 0; i < metaRange; i++) {
+            this.addItem(item, metaStart+i, isInclusive);
+        }
         return this;
     }
     public RecipeGroupBuilder addItem(Block block){
@@ -130,9 +147,22 @@ public class RecipeGroupBuilder {
             if (currentRecipe instanceof RecipeShaped || currentRecipe instanceof RecipeShapeless){
                 ItemStack recipeItem = currentRecipe.getRecipeOutput();
                 boolean foundMatch = false;
+                for (ItemStack stack: excludeItemList) {
+                    if (recipeItem.itemID == stack.itemID && recipeItem.getMetadata() == stack.getMetadata()){
+                        foundMatch = true;
+                        continue;
+                    }
+                }
+                if (foundMatch){
+                    continue;
+                }
                 for (Class clazz : exclusiveClassList){
                     try {
-                        clazz.cast(recipeItem.getItem());
+                        if (recipeItem.itemID < Block.blocksList.length){
+                            clazz.cast(Block.getBlock(recipeItem.itemID));
+                        } else {
+                            clazz.cast(recipeItem.getItem());
+                        }
                         recipeGroupRecipes.add(currentRecipe);
                         unusedRecipes.remove(i - removeOffset);
                         removeOffset++;
@@ -179,6 +209,15 @@ public class RecipeGroupBuilder {
             if (currentRecipe instanceof RecipeShaped || currentRecipe instanceof RecipeShapeless){
                 ItemStack recipeItem = currentRecipe.getRecipeOutput();
                 boolean foundMatch = false;
+                for (ItemStack stack: excludeItemList) {
+                    if (recipeItem.itemID == stack.itemID && recipeItem.getMetadata() == stack.getMetadata()){
+                        foundMatch = true;
+                        continue;
+                    }
+                }
+                if (foundMatch){
+                    continue;
+                }
                 for (IRecipe groupRecipe : recipeGroupRecipes){
                     if (groupRecipe.equals(currentRecipe)){
                         foundMatch = true;
@@ -190,7 +229,11 @@ public class RecipeGroupBuilder {
                 }
                 for (Class clazz : inclusiveClassList){
                     try {
-                        clazz.cast(recipeItem.getItem());
+                        if (recipeItem.itemID < Block.blocksList.length){
+                            clazz.cast(Block.getBlock(recipeItem.itemID));
+                        } else {
+                            clazz.cast(recipeItem.getItem());
+                        }
                         recipeGroupRecipes.add(currentRecipe);
                         foundMatch = true;
                         continue;

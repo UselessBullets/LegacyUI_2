@@ -180,6 +180,6 @@ public class LegacyCategoryManager {
                 MOD_ID,
                 "redstone",
                 IconHelper.getOrCreateIconTexture(MOD_ID, "lever.png"),
-                new RecipeGroup[]{});
+                new RecipeGroup[]{basicRedstone});
     }
 }

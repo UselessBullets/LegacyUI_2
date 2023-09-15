@@ -132,7 +132,11 @@ public class RecipeGroupBuilder {
                 boolean foundMatch = false;
                 for (Class clazz : exclusiveClassList){
                     try {
-                        clazz.cast(recipeItem.getItem());
+                        if (recipeItem.itemID < Block.blocksList.length){
+                            clazz.cast(Block.getBlock(recipeItem.itemID));
+                        } else {
+                            clazz.cast(recipeItem.getItem());
+                        }
                         recipeGroupRecipes.add(currentRecipe);
                         unusedRecipes.remove(i - removeOffset);
                         removeOffset++;
@@ -190,7 +194,11 @@ public class RecipeGroupBuilder {
                 }
                 for (Class clazz : inclusiveClassList){
                     try {
-                        clazz.cast(recipeItem.getItem());
+                        if (recipeItem.itemID < Block.blocksList.length){
+                            clazz.cast(Block.getBlock(recipeItem.itemID));
+                        } else {
+                            clazz.cast(recipeItem.getItem());
+                        }
                         recipeGroupRecipes.add(currentRecipe);
                         foundMatch = true;
                         continue;

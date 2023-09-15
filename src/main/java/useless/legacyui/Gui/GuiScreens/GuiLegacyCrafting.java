@@ -182,11 +182,8 @@ public class GuiLegacyCrafting extends GuiContainer {
         drawStringCenteredNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.inventory"),GUIx + 205, GUIy + 97, ModSettings.Colors.GuiLabelColor());
         String craftingString;
         if (ModSettings.Gui.ShowCraftingItemNamePreview()){
-            if (!currentCategory().isEmpty(isSmall())){
-                IRecipe currentRecipe = (IRecipe) currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall())[currentScroll];
-                craftingString = currentRecipe.getRecipeOutput().getDisplayName();
-            }
-            craftingString = "Null";
+            IRecipe currentRecipe = (IRecipe) currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall())[currentScroll];
+            craftingString = currentRecipe.getRecipeOutput().getDisplayName();
         } else {
             craftingString = I18n.getInstance().translateKey("legacyui.guilabel.crafting");
         }
@@ -205,7 +202,7 @@ public class GuiLegacyCrafting extends GuiContainer {
     private void drawSelectionCursorForeground(){
         int x = 8 + 18*currentSlot;
         int y = 52;
-        if (!currentCategory().isEmpty(isSmall()) && currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall()).length > 1){
+        if (currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall()).length > 1){
             UtilGui.drawTexturedModalRect(this, x - 1,y,35, 175, 26, 24, 1f/guiTextureWidth);
             UtilGui.drawTexturedModalRect(this, x - 1,y - 31, 115, 175, 26,31, 1f/guiTextureWidth);
             UtilGui.drawTexturedModalRect(this, x - 1,y + 24, 141, 175, 26,31, 1f/guiTextureWidth);
@@ -216,7 +213,7 @@ public class GuiLegacyCrafting extends GuiContainer {
     private void drawSelectionCursorBackground(){
         int x = 12 + 18*currentSlot;
         int y = 51;
-        if (!currentCategory().isEmpty(isSmall()) && currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall()).length > 1){
+        if (currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall()).length > 1){
             UtilGui.drawTexturedModalRect(this,GUIx + x - 1,GUIy + y - 17,167, 175, 18, 18, 1f/guiTextureWidth);
             UtilGui.drawTexturedModalRect(this,GUIx + x - 1,GUIy + y + 25, 167, 175, 18,18, 1f/guiTextureWidth);
         }

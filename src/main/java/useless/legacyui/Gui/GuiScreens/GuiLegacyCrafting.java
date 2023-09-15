@@ -97,13 +97,13 @@ public class GuiLegacyCrafting extends GuiContainer {
     }
     public void selectTab(int value){
         currentTab = value;
-        int tabAmount = 8;
-        if (currentTab > Math.min(tabAmount-1, LegacyCategoryManager.recipeCategories.size()-1)){
+        int tabAmount = Math.min(8, LegacyCategoryManager.recipeCategories.size());
+        if (currentTab > tabAmount-1){
             currentTab -= tabAmount;
         } else if (currentTab < 0){
             currentTab += tabAmount;
         }
-        currentTab = Math.min(currentTab, LegacyCategoryManager.recipeCategories.size()-1);
+        currentTab = Math.min(currentTab, tabAmount-1);
         currentScroll = 0;
         currentSlot = 0;
         setContainerRecipes();
@@ -130,6 +130,9 @@ public class GuiLegacyCrafting extends GuiContainer {
                 scrollSlot(-1);
             }
         }
+        if (KeyboardHelper.isKeyPressedThisFrame(mc.gameSettings.keyJump.keyCode())){
+            craft();
+        }
     }
     public RecipeCategory currentCategory(){
         return LegacyCategoryManager.recipeCategories.get(currentTab);
@@ -155,6 +158,9 @@ public class GuiLegacyCrafting extends GuiContainer {
     public void setContainerRecipes(){
         ((LegacyContainerCrafting)inventorySlots).setRecipes(player, mc.statFileWriter, true);
     }
+    public void craft(){
+        ((LegacyContainerCrafting)inventorySlots).craft(mc, inventorySlots.windowId);
+    }
     public void onGuiClosed() {
         super.onGuiClosed();
         this.inventorySlots.onCraftGuiClosed(this.mc.thePlayer);
@@ -175,15 +181,18 @@ public class GuiLegacyCrafting extends GuiContainer {
         int tabWidth = 35;
         UtilGui.drawTexturedModalRect(this, GUIx + (tabWidth - 1) * currentTab, GUIy - 2, 0,175, tabWidth, 30, 1f/guiTextureWidth); // Render Selected Tab
 
-        if (isSmall()){ // 2x2 Crafting overlay
+        IRecipe currentRecipe = (IRecipe) currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall())[currentScroll];
+        if (currentCategory().getRecipeGroups(isSmall())[currentSlot].getContainer(currentScroll, isSmall()).inventorySlots.size() <= 5){ // 2x2 Crafting overlay
             UtilGui.drawTexturedModalRect(this, GUIx + 19, GUIy + 108, 61, 175, 54, 54, 1f/guiTextureWidth);
         }
 
         drawStringCenteredNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.inventory"),GUIx + 205, GUIy + 97, ModSettings.Colors.GuiLabelColor());
         String craftingString;
         if (ModSettings.Gui.ShowCraftingItemNamePreview()){
-            IRecipe currentRecipe = (IRecipe) currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall())[currentScroll];
             craftingString = currentRecipe.getRecipeOutput().getDisplayName();
+            if (!LegacyContainerCrafting.isDicovered(currentRecipe.getRecipeOutput(), mc.statFileWriter, mc.thePlayer)){
+                craftingString = craftingString.replaceAll("[a-zA-Z]|[0-9]", "?");
+            }
         } else {
             craftingString = I18n.getInstance().translateKey("legacyui.guilabel.crafting");
         }

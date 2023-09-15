@@ -33,8 +33,10 @@ public class GuiLegacyInventory extends GuiInventory {
 
         // Offset Armor Button
         GuiButton armorButton = ((GuiInventoryAccessor)this).getArmorButton();
-        armorButton.xPosition += 44;
-        armorButton.yPosition -= 5;
+        if (armorButton != null){
+            armorButton.xPosition += 44;
+            armorButton.yPosition -= 5;
+        }
 
         // Create Crafting Button
         craftButton = new GuiAuditoryButtons(10, GUIx + 138, GUIy + 33, 20, 21, "");

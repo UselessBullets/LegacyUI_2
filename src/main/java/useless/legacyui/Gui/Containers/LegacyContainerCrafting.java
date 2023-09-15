@@ -1,5 +1,6 @@
 package useless.legacyui.Gui.Containers;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.InventoryAction;
 import net.minecraft.core.achievement.stat.StatFileWriter;
 import net.minecraft.core.achievement.stat.StatList;
@@ -197,6 +198,50 @@ public class LegacyContainerCrafting extends Container {
             index++;
         }
     }
+    public boolean craft(Minecraft mc, int windowId){
+        boolean isInInventory = craftingSize <= 4;
+
+        int currentSlotId = GuiLegacyCrafting.currentSlot;
+        int currentScrollAmount = GuiLegacyCrafting.currentScroll;
+        int categoryIndex = GuiLegacyCrafting.currentTab;
+
+        RecipeCategory category = LegacyCategoryManager.recipeCategories.get(categoryIndex);
+
+        ContainerGuidebookRecipeCrafting recipe = category.getRecipeGroups(isInInventory)[currentSlotId].getContainer(currentScrollAmount, isInInventory);
+        RecipeCost recipeCost = new RecipeCost(recipe);
+
+        if (canCraft(mc.thePlayer, recipeCost)){
+            for (int i = 1; i < recipe.inventorySlots.size(); i++){
+                ItemStack itemStack = recipe.inventorySlots.get(i).getStack();
+                if (itemStack != null){
+                    int slotId = InventoryHelper.findStackIndex(mc.thePlayer.inventory.mainInventory, itemStack, recipeCost.useAlts); // Finds Slot index of an inventory Slot with a desired item
+                    if (slotId == -1) {continue;}
+                    if (slotId < 9){ slotId += 36;}
+
+
+                    if (isInInventory){
+                        mc.playerController.doInventoryAction(windowId, InventoryAction.CLICK_LEFT, new int[]{slotId}, mc.thePlayer); // Picks up stack
+                        mc.playerController.doInventoryAction(windowId, InventoryAction.CLICK_RIGHT, new int[]{i}, mc.thePlayer); // Places one item
+                        mc.playerController.doInventoryAction(windowId, InventoryAction.CLICK_LEFT, new int[]{slotId}, mc.thePlayer); // Puts down stack
+                    }
+                    else if (recipe.inventorySlots.size() > 5){// 3x3 crafting
+                        int offset = 1;
+                        mc.playerController.doInventoryAction(windowId, InventoryAction.CLICK_LEFT, new int[]{slotId + offset}, mc.thePlayer); // Picks up stack
+                        mc.playerController.doInventoryAction(windowId, InventoryAction.CLICK_RIGHT, new int[]{i}, mc.thePlayer); // Places one item
+                        mc.playerController.doInventoryAction(windowId, InventoryAction.CLICK_LEFT, new int[]{slotId + offset}, mc.thePlayer); // Puts down stack
+                    }
+                    else {// 2x2 crafting
+                        mc.playerController.doInventoryAction(windowId, InventoryAction.CLICK_LEFT, new int[]{slotId + 1}, mc.thePlayer); // Picks up stack
+                        mc.playerController.doInventoryAction(windowId, InventoryAction.CLICK_RIGHT, new int[]{i + (i/3)}, mc.thePlayer); // Places one item
+                        mc.playerController.doInventoryAction(windowId, InventoryAction.CLICK_LEFT, new int[]{slotId + 1}, mc.thePlayer); // Puts down stack
+                    }
+                }
+            }
+            mc.playerController.doInventoryAction(windowId, InventoryAction.MOVE_STACK, new int[]{0}, mc.thePlayer);
+            return true; // Craft succeeded
+        }
+        return false; // Craft failed
+    }
     private boolean canCraft(EntityPlayer player, RecipeCost cost){
         boolean canCraft = true;
         for (int i = 0; i < cost.itemStacks.length; i++){
@@ -204,7 +249,7 @@ public class LegacyContainerCrafting extends Container {
         }
         return canCraft;
     }
-    private boolean isDicovered(ItemStack item, StatFileWriter statWriter, EntityPlayer player){
+    public static boolean isDicovered(ItemStack item, StatFileWriter statWriter, EntityPlayer player){
         if (!ModSettings.Gui.HideUndiscoveredItems()){
             return true;
         }

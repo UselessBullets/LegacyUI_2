@@ -98,7 +98,7 @@ public class GuiLegacyCrafting extends GuiContainer {
     public void selectTab(int value){
         currentTab = value;
         int tabAmount = 8;
-        if (currentTab > 7){
+        if (currentTab > Math.min(tabAmount-1, LegacyCategoryManager.recipeCategories.size()-1)){
             currentTab -= tabAmount;
         } else if (currentTab < 0){
             currentTab += tabAmount;

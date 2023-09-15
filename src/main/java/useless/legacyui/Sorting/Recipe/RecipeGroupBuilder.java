@@ -38,6 +38,12 @@ public class RecipeGroupBuilder {
 
         return this;
     }
+    public RecipeGroupBuilder addItemsWithMetaRange(Item item, int metaStart, int metaRange, boolean isInclusive){
+        for (int i = 0; i < metaRange; i++) {
+            this.addItem(item, metaStart+i, isInclusive);
+        }
+        return this;
+    }
     public RecipeGroupBuilder addItem(Block block){
         return addItem(block.asItem(), false);
     }

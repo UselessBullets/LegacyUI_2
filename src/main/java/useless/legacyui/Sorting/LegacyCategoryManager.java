@@ -37,7 +37,7 @@ public class LegacyCategoryManager {
     public static class recipeBasics {
         public static RecipeGroup planks = new RecipeGroupBuilder()
                 .addItem(Block.planksOak)
-                .addItem(Block.planksOakPainted)
+                .addItemsWithMetaRange(Block.planksOakPainted.asItem(), 0, 16, false)
                 .build();
         public static RecipeGroup torches = new RecipeGroupBuilder()
                 .addClass(BlockTorch.class)
@@ -62,11 +62,34 @@ public class LegacyCategoryManager {
         public static RecipeGroup fencegates = new RecipeGroupBuilder()
                 .addClass(BlockFenceGate.class)
                 .build();
+        public static RecipeGroup woodStairs = new RecipeGroupBuilder()
+                .addKeyword("stairs.planks")
+                .build();
+        public static RecipeGroup woodSlabs = new RecipeGroupBuilder()
+                .addKeyword("slab.planks")
+                .build();
+        public static RecipeGroup ladders = new RecipeGroupBuilder()
+                .addClass(BlockLadder.class)
+                .addClass(BlockFenceChainlink.class)
+                .build();
+        public static RecipeGroup doors = new RecipeGroupBuilder()
+                .addKeyword("door")
+                .build();
+        public static RecipeGroup books = new RecipeGroupBuilder()
+                .addItem(Block.bookshelfPlanksOak)
+                .addItem(Item.book)
+                .addItem(Item.paper)
+                .build();
+        public static RecipeGroup display = new RecipeGroupBuilder()
+                .addClass(ItemSign.class)
+                .addClass(ItemPainting.class)
+                .addClass(ItemFlag.class)
+                .build();
         public static RecipeCategory category = new RecipeCategory(
                 MOD_ID,
                 "basics",
                 IconHelper.getOrCreateIconTexture(MOD_ID, "planks.png"),
-                new RecipeGroup[]{planks, torches, utilityBlocks, chest, bed, fences, fencegates});
+                new RecipeGroup[]{planks, torches, utilityBlocks, chest, bed, fences, fencegates, woodStairs, woodSlabs, ladders, doors, books, display});
     }
     public static class recipeBricks {
         public static RecipeGroup blocks = new RecipeGroupBuilder()

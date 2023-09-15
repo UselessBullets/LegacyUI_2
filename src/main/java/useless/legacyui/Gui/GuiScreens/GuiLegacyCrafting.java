@@ -1,11 +1,13 @@
 package useless.legacyui.Gui.GuiScreens;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiContainer;
 import net.minecraft.core.crafting.recipe.IRecipe;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.lang.I18n;
 import org.lwjgl.input.Keyboard;
+import useless.legacyui.Gui.Buttons.GuiAuditoryButton;
 import useless.legacyui.Gui.Containers.LegacyContainerCrafting;
 import useless.legacyui.Helper.KeyboardHelper;
 import useless.legacyui.ModSettings;
@@ -22,18 +24,24 @@ public class GuiLegacyCrafting extends GuiContainer {
     public static int currentScroll = 0;
     public static int currentSlot = 0;
     private static final int guiTextureWidth = 512;
+    private static final int tabWidth = 35;
+    public GuiAuditoryButton[] tabButtons = new GuiAuditoryButton[8];
+    public GuiAuditoryButton[] slotButtons = new GuiAuditoryButton[14];
+    public GuiAuditoryButton scrollUp;
+    public GuiAuditoryButton scrollDown;
     public GuiLegacyCrafting(EntityPlayer player, int craftingSize){
         super((new LegacyContainerCrafting(player.inventory, craftingSize)));
         this.craftingSize = craftingSize;
         this.player = player;
         this.mc = Minecraft.getMinecraft(this);
-        setContainerRecipes();
+        initGui();
     }
     public GuiLegacyCrafting(EntityPlayer player, int x, int y, int z, int craftingSize) {
         super(new LegacyContainerCrafting(player.inventory, player.world, x, y, z, craftingSize));
         this.craftingSize = craftingSize;
         this.player = player;
         this.mc = Minecraft.getMinecraft(this);
+        initGui();
     }
     public void scrollSlot(int direction){
         if (direction > 0){
@@ -108,6 +116,25 @@ public class GuiLegacyCrafting extends GuiContainer {
         currentSlot = 0;
         setContainerRecipes();
     }
+    protected void buttonPressed(GuiButton guibutton) {
+        super.buttonPressed(guibutton);
+        for (int i = 0; i < tabButtons.length; i++) {
+            if (guibutton == tabButtons[i]){
+                selectTab(i);
+            }
+        }
+        for (int i = 0; i < slotButtons.length; i++) {
+            if (guibutton == slotButtons[i]){
+                selectSlot(i);
+            }
+        }
+        if (guibutton == scrollUp){
+            scrollGroup(-1);
+        }
+        if (guibutton == scrollDown){
+            scrollGroup(1);
+        }
+    }
     public void handleInputs(){
         boolean shifted = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
         if (KeyboardHelper.isKeyPressedThisFrame(mc.gameSettings.keyForward.keyCode()) || KeyboardHelper.isKeyPressedThisFrame(mc.gameSettings.keyLookUp.keyCode())){
@@ -149,6 +176,29 @@ public class GuiLegacyCrafting extends GuiContainer {
         GUIx = (this.width - this.xSize) / 2;
         GUIy = (this.height - this.ySize) / 2;
 
+        for (int i = 0; i < tabButtons.length; i++) {
+            tabButtons[i] = new GuiAuditoryButton(controlList.size(), GUIx + (tabWidth-1)*i, GUIy, tabWidth-1, 24, "");
+            tabButtons[i].setMuted(true);
+            tabButtons[i].visible = false;
+            controlList.add(tabButtons[i]);
+        }
+        int slotWidth = 18;
+        for (int i = 0; i < slotButtons.length; i++) {
+            slotButtons[i] = new GuiAuditoryButton(controlList.size(), GUIx + 11 + (slotWidth)*i, GUIy + 55, slotWidth, slotWidth, "");
+            slotButtons[i].setMuted(true);
+            slotButtons[i].visible = false;
+            controlList.add(slotButtons[i]);
+        }
+        scrollUp = new GuiAuditoryButton(controlList.size(), GUIx + 11, GUIy + 55 - 32, slotWidth, 29, "");
+        scrollUp.visible = false;
+        scrollUp.setMuted(true);
+        controlList.add(scrollUp);
+
+        scrollDown = new GuiAuditoryButton(controlList.size(), GUIx + 11, GUIy + 55 + 21, slotWidth, 29, "");
+        scrollDown.visible = false;
+        scrollDown.setMuted(true);
+        controlList.add(scrollDown);
+
         // Static Initialization
         currentTab = 0;
         currentScroll = 0;
@@ -156,6 +206,21 @@ public class GuiLegacyCrafting extends GuiContainer {
         setContainerRecipes();
     }
     public void setContainerRecipes(){
+        RecipeGroup[] recipeGroups = currentCategory().getRecipeGroups(isSmall());
+        if (recipeGroups[currentSlot].getRecipes(isSmall()).length > 1){ // If scroll bar active
+            scrollUp.enabled = true;
+            scrollDown.enabled = true;
+        } else {
+            scrollUp.enabled = false;
+            scrollDown.enabled = false;
+        }
+        scrollUp.xPosition = GUIx + 11 + 18 * currentSlot;
+        scrollDown.xPosition = GUIx + 11 + 18 * currentSlot;
+
+        for (int i = 0; i < slotButtons.length; i++) { // Only enable buttons if there is a corresponding recipe group
+            slotButtons[i].enabled = i < recipeGroups.length;
+        }
+
         ((LegacyContainerCrafting)inventorySlots).setRecipes(player, mc.statFileWriter, true);
     }
     public void craft(){
@@ -178,7 +243,7 @@ public class GuiLegacyCrafting extends GuiContainer {
         UtilGui.bindTexture("/assets/legacyui/gui/legacycrafting.png");
         UtilGui.drawTexturedModalRect(this, GUIx, GUIy, 0,0, this.xSize, this.ySize, 1f/guiTextureWidth); // Render Background
 
-        int tabWidth = 35;
+
         UtilGui.drawTexturedModalRect(this, GUIx + (tabWidth - 1) * currentTab, GUIy - 2, 0,175, tabWidth, 30, 1f/guiTextureWidth); // Render Selected Tab
 
         IRecipe currentRecipe = (IRecipe) currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall())[currentScroll];

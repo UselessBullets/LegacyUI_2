@@ -6,17 +6,15 @@ import net.minecraft.client.render.EntityRenderDispatcher;
 import net.minecraft.client.render.Lighting;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.lang.I18n;
-import net.minecraft.core.player.inventory.ContainerPlayer;
 import org.lwjgl.opengl.GL11;
-import useless.legacyui.LegacyUI;
+import useless.legacyui.Gui.Buttons.GuiAuditoryButton;
 import useless.legacyui.Mixins.GuiInventoryAccessor;
 import useless.legacyui.ModSettings;
-import useless.prismaticlibe.gui.GuiAuditoryButtons;
 
 public class GuiLegacyInventory extends GuiInventory {
     private static int GUIx;
     private static int GUIy;
-    protected GuiAuditoryButtons craftButton;
+    protected GuiAuditoryButton craftButton;
     protected EntityPlayer player;
     public GuiLegacyInventory(EntityPlayer player) {
         super(player);
@@ -39,7 +37,7 @@ public class GuiLegacyInventory extends GuiInventory {
         }
 
         // Create Crafting Button
-        craftButton = new GuiAuditoryButtons(10, GUIx + 138, GUIy + 33, 20, 21, "");
+        craftButton = new GuiAuditoryButton(10, GUIx + 138, GUIy + 33, 20, 21, "");
         craftButton.setMuted(true);
         craftButton.visible = false;
         controlList.add(craftButton);

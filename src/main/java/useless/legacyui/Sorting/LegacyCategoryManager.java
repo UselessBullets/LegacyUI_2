@@ -42,6 +42,7 @@ public class LegacyCategoryManager {
         public static RecipeGroup torches = new RecipeGroupBuilder()
                 .addClass(BlockTorch.class)
                 .addItem(Item.stick)
+                .excludeItem(Block.torchRedstoneActive.asItem())
                 .build();
         public static RecipeGroup utilityBlocks = new RecipeGroupBuilder()
                 .addItem(Block.jukebox)

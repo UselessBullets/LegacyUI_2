@@ -22,6 +22,17 @@ public class RecipeGroupBuilder {
     private final List<Class> exclusiveClassList = new ArrayList<>();
     private final List<ItemStack> exclusiveItemList = new ArrayList<>();
     private final List<String> exclusiveKeywordList = new ArrayList<>();
+    private final List<ItemStack> excludeItemList = new ArrayList<>();
+    public RecipeGroupBuilder excludeItem(Item item){
+        return excludeItem(new ItemStack(item));
+    }
+    public RecipeGroupBuilder excludeItem(ItemStack stack){
+        if (isDebug){
+            LegacyUI.LOGGER.info(stack.toString());
+        }
+        excludeItemList.add(stack);
+        return this;
+    }
     public RecipeGroupBuilder addKeyword(String keyword){
         return addKeyword(keyword, false);
     }
@@ -136,6 +147,15 @@ public class RecipeGroupBuilder {
             if (currentRecipe instanceof RecipeShaped || currentRecipe instanceof RecipeShapeless){
                 ItemStack recipeItem = currentRecipe.getRecipeOutput();
                 boolean foundMatch = false;
+                for (ItemStack stack: excludeItemList) {
+                    if (recipeItem.itemID == stack.itemID && recipeItem.getMetadata() == stack.getMetadata()){
+                        foundMatch = true;
+                        continue;
+                    }
+                }
+                if (foundMatch){
+                    continue;
+                }
                 for (Class clazz : exclusiveClassList){
                     try {
                         if (recipeItem.itemID < Block.blocksList.length){
@@ -189,6 +209,15 @@ public class RecipeGroupBuilder {
             if (currentRecipe instanceof RecipeShaped || currentRecipe instanceof RecipeShapeless){
                 ItemStack recipeItem = currentRecipe.getRecipeOutput();
                 boolean foundMatch = false;
+                for (ItemStack stack: excludeItemList) {
+                    if (recipeItem.itemID == stack.itemID && recipeItem.getMetadata() == stack.getMetadata()){
+                        foundMatch = true;
+                        continue;
+                    }
+                }
+                if (foundMatch){
+                    continue;
+                }
                 for (IRecipe groupRecipe : recipeGroupRecipes){
                     if (groupRecipe.equals(currentRecipe)){
                         foundMatch = true;

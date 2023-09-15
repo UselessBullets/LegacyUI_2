@@ -29,6 +29,8 @@ public class GuiLegacyCrafting extends GuiContainer {
     public GuiAuditoryButton[] slotButtons = new GuiAuditoryButton[14];
     public GuiAuditoryButton scrollUp;
     public GuiAuditoryButton scrollDown;
+    public GuiAuditoryButton craftingButton;
+    private static boolean previousShowDisplay = false;
     public GuiLegacyCrafting(EntityPlayer player, int craftingSize){
         super((new LegacyContainerCrafting(player.inventory, craftingSize)));
         this.craftingSize = craftingSize;
@@ -57,6 +59,10 @@ public class GuiLegacyCrafting extends GuiContainer {
         }
     }
     public void selectSlot(int value){
+        if (value == currentSlot){
+            craft(); // Craft if clicking on currently selected slot
+            return; // Dont reset scroll
+        }
         currentSlot = value;
         int groupSize = currentCategory().getRecipeGroups(isSmall()).length;
         if (currentSlot > groupSize-1){
@@ -134,6 +140,9 @@ public class GuiLegacyCrafting extends GuiContainer {
         if (guibutton == scrollDown){
             scrollGroup(1);
         }
+        if (guibutton == craftingButton){
+            craft();
+        }
     }
     public void handleInputs(){
         boolean shifted = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
@@ -199,6 +208,11 @@ public class GuiLegacyCrafting extends GuiContainer {
         scrollDown.setMuted(true);
         controlList.add(scrollDown);
 
+        craftingButton = new GuiAuditoryButton(controlList.size(), GUIx + 102, GUIy + 122, 26, 26, "");
+        craftingButton.visible = false;
+        craftingButton.setMuted(true);
+        controlList.add(craftingButton);
+
         // Static Initialization
         currentTab = 0;
         currentScroll = 0;
@@ -221,7 +235,7 @@ public class GuiLegacyCrafting extends GuiContainer {
             slotButtons[i].enabled = i < recipeGroups.length;
         }
 
-        ((LegacyContainerCrafting)inventorySlots).setRecipes(player, mc.statFileWriter, true);
+        ((LegacyContainerCrafting)inventorySlots).setRecipes(player, mc.statFileWriter, renderCraftingDisplay());
     }
     public void craft(){
         ((LegacyContainerCrafting)inventorySlots).craft(mc, inventorySlots.windowId);
@@ -232,6 +246,10 @@ public class GuiLegacyCrafting extends GuiContainer {
     }
     public void drawScreen(int x, int y, float renderPartialTicks) {
         handleInputs();
+        if (previousShowDisplay != renderCraftingDisplay()){
+            previousShowDisplay = renderCraftingDisplay();
+            setContainerRecipes();
+        }
         super.drawScreen(x, y, renderPartialTicks);
     }
     protected void drawGuiContainerForegroundLayer(){
@@ -247,7 +265,7 @@ public class GuiLegacyCrafting extends GuiContainer {
         UtilGui.drawTexturedModalRect(this, GUIx + (tabWidth - 1) * currentTab, GUIy - 2, 0,175, tabWidth, 30, 1f/guiTextureWidth); // Render Selected Tab
 
         IRecipe currentRecipe = (IRecipe) currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall())[currentScroll];
-        if (currentCategory().getRecipeGroups(isSmall())[currentSlot].getContainer(currentScroll, isSmall()).inventorySlots.size() <= 5){ // 2x2 Crafting overlay
+        if (currentCategory().getRecipeGroups(isSmall())[currentSlot].getContainer(currentScroll, isSmall()).inventorySlots.size() <= 5 && renderCraftingDisplay()){ // 2x2 Crafting overlay
             UtilGui.drawTexturedModalRect(this, GUIx + 19, GUIy + 108, 61, 175, 54, 54, 1f/guiTextureWidth);
         }
 
@@ -291,6 +309,22 @@ public class GuiLegacyCrafting extends GuiContainer {
             UtilGui.drawTexturedModalRect(this,GUIx + x - 1,GUIy + y - 17,167, 175, 18, 18, 1f/guiTextureWidth);
             UtilGui.drawTexturedModalRect(this,GUIx + x - 1,GUIy + y + 25, 167, 175, 18,18, 1f/guiTextureWidth);
         }
+    }
+    public boolean renderCraftingDisplay() {
+        boolean holdingItem = mc.thePlayer.inventory.getHeldItemStack() != null;
 
+        boolean isItem = false;
+        for (int i = 1; i < ((craftingSize<=4) ? 5:10); i++) {
+            isItem = isItem || (inventorySlots.getSlot(i) != null && inventorySlots.getSlot(i).getStack() != null);
+        }
+        boolean result = !isItem && !holdingItem;
+
+        if (result){
+            craftingButton.enabled = true;
+        } else {
+            craftingButton.enabled = false;
+        }
+
+        return result;
     }
 }

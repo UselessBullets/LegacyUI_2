@@ -26,17 +26,18 @@ import useless.legacyui.Sorting.Recipe.RecipeGroup;
 import useless.prismaticlibe.gui.slot.SlotCraftingDisplay;
 import useless.prismaticlibe.gui.slot.SlotResizable;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class LegacyContainerCrafting extends Container {
     public InventoryCrafting craftMatrix;
     public IInventory craftResult = new InventoryCraftResult();
-    private World world;
-    private int x;
-    private int y;
-    private int z;
-    private int craftingSize;
-    private InventoryPlayer inventoryPlayer;
+    private final World world;
+    private final int x;
+    private final int y;
+    private final int z;
+    private final int craftingSize;
+    private final InventoryPlayer inventoryPlayer;
     public LegacyContainerCrafting(InventoryPlayer inventoryplayer, int craftingSize) {
         if (craftingSize <= 4){
             craftMatrix = new InventoryCrafting(this, 2, 2);
@@ -49,7 +50,6 @@ public class LegacyContainerCrafting extends Container {
         this.z = 0;
         this.craftingSize = craftingSize;
         this.inventoryPlayer = inventoryplayer;
-        craftingSlots();
     }
     public LegacyContainerCrafting(InventoryPlayer inventoryplayer, World world, int x, int y, int z, int craftingSize) {
         if (craftingSize <= 4){
@@ -154,39 +154,38 @@ public class LegacyContainerCrafting extends Container {
                 }
 
                 // Crafting table result preview
-                if (showCraftingPreview){
-                    RecipeCost cost = new RecipeCost(currentContainer);
-                    craftable = canCraft(player, cost);
-                    item = currentContainer.inventorySlots.get(0).getStack();
+                int offset = showCraftingPreview ? 0:5000;
+                RecipeCost cost = new RecipeCost(currentContainer);
+                craftable = canCraft(player, cost);
+                item = currentContainer.inventorySlots.get(0).getStack();
+                discovered = isDicovered(item, statWriter, player);
+                this.addSlot(new SlotCraftingDisplayLegacy(this.inventorySlots.size(), 103, 123+offset, item, discovered || craftable, !craftable, ModSettings.Colors.HighlightColor(), 26));
+
+                for (int j = 1; j < currentContainer.inventorySlots.size(); j++) {
+                    item = currentContainer.inventorySlots.get(j).getStack();
                     discovered = isDicovered(item, statWriter, player);
-                    this.addSlot(new SlotCraftingDisplayLegacy(this.inventorySlots.size(), 103, 123, item, discovered || craftable, !craftable, ModSettings.Colors.HighlightColor(), 26));
 
-                    for (int j = 1; j < currentContainer.inventorySlots.size(); j++) {
-                        item = currentContainer.inventorySlots.get(j).getStack();
-                        discovered = isDicovered(item, statWriter, player);
-
-                        int k = 0;
-                        if (item != null){
-                            for (int i = 0; i < cost.itemStacks.length; i++){
-                                if (cost.itemStacks[i].getItem() == item.getItem()){
-                                    cost.quantity[i] -= 1;
-                                    k = i;
-                                    break;
-                                }
+                    int k = 0;
+                    if (item != null){
+                        for (int i = 0; i < cost.itemStacks.length; i++){
+                            if (cost.itemStacks[i].getItem() == item.getItem()){
+                                cost.quantity[i] -= 1;
+                                k = i;
+                                break;
                             }
                         }
-
-                        if (currentContainer.inventorySlots.size() > 5){
-                            // Render 3x3 crafting grid
-                            this.addSlot(new SlotCraftingDisplayLegacy(this.inventorySlots.size(), 20 + 18 * ((j - 1) % 3), 109 + 18 * ((j - 1) / 3), item, discovered, InventoryHelper.itemsInInventory(inventoryPlayer, item, cost.useAlts) <= cost.quantity[k] && item != null, ModSettings.Colors.HighlightColor()));
-                        }
-                        else {
-                            // Render 2x2 crafting gird
-                            this.addSlot(new SlotCraftingDisplayLegacy(this.inventorySlots.size(), 29 + 18 * ((j - 1) % 2), 118 + 18 * ((j - 1) / 2), item, discovered, InventoryHelper.itemsInInventory(inventoryPlayer, item, cost.useAlts) <= cost.quantity[k] && item != null, ModSettings.Colors.HighlightColor()));
-                        }
-
-
                     }
+
+                    if (currentContainer.inventorySlots.size() > 5){
+                        // Render 3x3 crafting grid
+                        this.addSlot(new SlotCraftingDisplayLegacy(this.inventorySlots.size(), 20 + 18 * ((j - 1) % 3), 109 + offset + 18 * ((j - 1) / 3), item, discovered, InventoryHelper.itemsInInventory(inventoryPlayer, item, cost.useAlts) <= cost.quantity[k] && item != null, ModSettings.Colors.HighlightColor()));
+                    }
+                    else {
+                        // Render 2x2 crafting gird
+                        this.addSlot(new SlotCraftingDisplayLegacy(this.inventorySlots.size(), 29 + 18 * ((j - 1) % 2), 118 + offset + 18 * ((j - 1) / 2), item, discovered, InventoryHelper.itemsInInventory(inventoryPlayer, item, cost.useAlts) <= cost.quantity[k] && item != null, ModSettings.Colors.HighlightColor()));
+                    }
+
+
                 }
             }
             else { // Renders first Slot of none selected groups
@@ -386,6 +385,9 @@ public class LegacyContainerCrafting extends Container {
         }
     }
     public ItemStack clickInventorySlot(InventoryAction action, int[] args, EntityPlayer player) {
+        if (args == null){
+            return null;
+        }
         if (getSlot(args[0]) instanceof SlotCraftingDisplay || getSlot(args[0]) instanceof SlotNull){
             return null;
         }

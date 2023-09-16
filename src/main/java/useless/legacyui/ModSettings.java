@@ -23,6 +23,7 @@ public class ModSettings {
         props.setProperty("EnableLegacyInventorySurvival", "true");
         props.setProperty("EnableLegacyInventoryCreative", "true");
         props.setProperty("ShowCraftingItemNamePreview", "true");
+        props.setProperty("UseRandomPitch", "false");
         config = new ConfigHandler(LegacyUI.MOD_ID, props);
     }
     public static class Gui {
@@ -79,8 +80,10 @@ public class ModSettings {
     }
     public static class Sounds {
         private static final boolean useLegacySounds = config.getBoolean("UseLegacySounds");
+        private static final boolean useRandomPitch = config.getBoolean("UseRandomPitch");
         public static boolean UseLegacySounds(){
             return useLegacySounds;
         }
+        public static boolean UseRandomPitch() {return  useRandomPitch;}
     }
 }

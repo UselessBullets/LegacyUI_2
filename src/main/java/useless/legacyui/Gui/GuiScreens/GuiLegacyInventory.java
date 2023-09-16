@@ -8,7 +8,8 @@ import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.lang.I18n;
 import org.lwjgl.opengl.GL11;
 import useless.legacyui.Gui.Buttons.GuiAuditoryButton;
-import useless.legacyui.Mixins.GuiInventoryAccessor;
+import useless.legacyui.LegacySoundManager;
+import useless.legacyui.Mixins.Gui.GuiInventoryAccessor;
 import useless.legacyui.ModSettings;
 
 public class GuiLegacyInventory extends GuiInventory {
@@ -38,7 +39,6 @@ public class GuiLegacyInventory extends GuiInventory {
 
         // Create Crafting Button
         craftButton = new GuiAuditoryButton(10, GUIx + 138, GUIy + 33, 20, 21, "");
-        craftButton.setMuted(true);
         craftButton.visible = false;
         controlList.add(craftButton);
 
@@ -50,8 +50,10 @@ public class GuiLegacyInventory extends GuiInventory {
         }
     }
     protected void openCrafting(){
+        LegacySoundManager.volume = 0;
         this.onGuiClosed();
         mc.displayGuiScreen(new GuiLegacyCrafting(player, 4));
+        LegacySoundManager.volume = 1f;
     }
     public void drawScreen(int x, int y, float renderPartialTicks) {
         super.drawScreen(x,y,renderPartialTicks);

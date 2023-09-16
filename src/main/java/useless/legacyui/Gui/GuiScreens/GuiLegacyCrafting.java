@@ -10,6 +10,7 @@ import org.lwjgl.input.Keyboard;
 import useless.legacyui.Gui.Buttons.GuiAuditoryButton;
 import useless.legacyui.Gui.Containers.LegacyContainerCrafting;
 import useless.legacyui.Helper.KeyboardHelper;
+import useless.legacyui.LegacySoundManager;
 import useless.legacyui.ModSettings;
 import useless.legacyui.Sorting.LegacyCategoryManager;
 import useless.legacyui.Sorting.Recipe.RecipeCategory;
@@ -63,6 +64,7 @@ public class GuiLegacyCrafting extends GuiContainer {
             craft(); // Craft if clicking on currently selected slot
             return; // Dont reset scroll
         }
+        LegacySoundManager.play.focus(true);
         currentSlot = value;
         int groupSize = currentCategory().getRecipeGroups(isSmall()).length;
         if (currentSlot > groupSize-1){
@@ -87,12 +89,16 @@ public class GuiLegacyCrafting extends GuiContainer {
         }
     }
     public void selectScrollGroup(int value){
+        int initialScroll = currentScroll;
         currentScroll = value;
         int groupSize = currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall()).length;
         if (currentScroll > groupSize-1){
             currentScroll -= groupSize;
         } else if (currentScroll < 0){
             currentScroll += groupSize;
+        }
+        if (initialScroll != currentScroll){
+            LegacySoundManager.play.scroll(true);
         }
         setContainerRecipes();
     }
@@ -110,6 +116,9 @@ public class GuiLegacyCrafting extends GuiContainer {
         }
     }
     public void selectTab(int value){
+        if (currentTab != value){
+            LegacySoundManager.play.focus(true);
+        }
         currentTab = value;
         int tabAmount = Math.min(8, LegacyCategoryManager.recipeCategories.size());
         if (currentTab > tabAmount-1){
@@ -120,6 +129,7 @@ public class GuiLegacyCrafting extends GuiContainer {
         currentTab = Math.min(currentTab, tabAmount-1);
         currentScroll = 0;
         currentSlot = 0;
+
         setContainerRecipes();
     }
     protected void buttonPressed(GuiButton guibutton) {
@@ -238,7 +248,11 @@ public class GuiLegacyCrafting extends GuiContainer {
         ((LegacyContainerCrafting)inventorySlots).setRecipes(player, mc.statFileWriter, renderCraftingDisplay());
     }
     public void craft(){
-        ((LegacyContainerCrafting)inventorySlots).craft(mc, inventorySlots.windowId);
+        if(((LegacyContainerCrafting)inventorySlots).craft(mc, inventorySlots.windowId)){
+            LegacySoundManager.play.craft(false);
+        } else {
+            LegacySoundManager.play.craftfail(false);
+        }
     }
     public void onGuiClosed() {
         super.onGuiClosed();

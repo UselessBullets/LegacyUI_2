@@ -14,7 +14,6 @@ import useless.legacyui.ModSettings;
 public class GuiIngameMixin {
     @Shadow
     protected Minecraft mc;
-
     @Redirect(method = "renderGameOverlay(FZII)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/ImmersiveModeOption;drawHotbar()Z"))
     private boolean dontRenderInGui(ImmersiveModeOption instance){
         if (ModSettings.Gui.HideHotbarInGUIs()){

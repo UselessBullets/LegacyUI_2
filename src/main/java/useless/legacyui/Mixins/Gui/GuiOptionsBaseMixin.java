@@ -11,12 +11,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import useless.legacyui.LegacySoundManager;
 import useless.legacyui.ModSettings;
-import useless.prismaticlibe.gui.IButtonSounds;
+import useless.legacyui.Gui.Buttons.IButtonSounds;
 
 @Mixin(value = GuiOptionsPageBase.class, remap = false)
 public class GuiOptionsBaseMixin extends GuiScreen {
     public GuiButton button;
-
     @Redirect(method = "mouseClicked(III)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiButton;mousePressed(Lnet/minecraft/client/Minecraft;II)Z"))
     private boolean buttonStealer(GuiButton button, Minecraft minecraft, int i, int j){
         this.button = button;
@@ -43,7 +42,5 @@ public class GuiOptionsBaseMixin extends GuiScreen {
                 soundManager.playSound(soundPath, soundType, volume, pitch);
             }
         }
-
-
     }
 }

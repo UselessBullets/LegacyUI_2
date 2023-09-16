@@ -1,6 +1,5 @@
 package useless.legacyui.Mixins.Gui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiAchievement;
 import net.minecraft.core.achievement.Achievement;
@@ -12,10 +11,8 @@ import useless.legacyui.LegacySoundManager;
 
 @Mixin(value = GuiAchievement.class, remap = false)
 public class GuiAchievementMixin extends Gui {
-
     @Inject(method = "queueTakenAchievement(Lnet/minecraft/core/achievement/Achievement;)V", at = @At("HEAD"))
     private void achievementSound(Achievement achievement, CallbackInfo cbi){
         LegacySoundManager.play.achievement(false);
     }
-
 }

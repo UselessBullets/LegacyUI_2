@@ -1,9 +1,7 @@
 package useless.legacyui.Mixins.Gui;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiContainer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.core.sound.SoundType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

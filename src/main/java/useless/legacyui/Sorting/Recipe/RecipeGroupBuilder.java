@@ -12,7 +12,7 @@ import useless.legacyui.LegacyUI;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeGroupBuilder {
+public class RecipeGroupBuilder{
     private static final List<IRecipe> allRecipes = CraftingManager.getInstance().getRecipeList();
     private static final List<IRecipe> unusedRecipes = new ArrayList<>(allRecipes);
     private Boolean isDebug = false;
@@ -137,134 +137,84 @@ public class RecipeGroupBuilder {
         }
         return this;
     }
-    public RecipeGroup build(){
+    protected boolean stackInExcludeItem(ItemStack recipeStack){
+        for (ItemStack stack: excludeItemList) {
+            if (recipeStack.itemID == stack.itemID && recipeStack.getMetadata() == stack.getMetadata()){
+                return true;
+            }
+        }
+        return false;
+    }
+    protected boolean stackInClassList(List<Class> classList, ItemStack itemStack){
+        for (Class clazz : classList){
+            try {
+                if (itemStack.itemID < Block.blocksList.length){
+                    clazz.cast(Block.getBlock(itemStack.itemID));
+                } else {
+                    clazz.cast(itemStack.getItem());
+                }
+                return true;
+            } catch (ClassCastException e){
+            }
+        }
+        return false;
+    }
+    protected boolean stackInItemList(List<ItemStack> itemStackList, ItemStack itemStack){
+        for (ItemStack stack : itemStackList){
+            if (itemStack.itemID == stack.itemID && itemStack.getMetadata() == stack.getMetadata()){
+                return true;
+            }
+        }
+        return false;
+    }
+    protected boolean stackInKeywordList(List<String> keywordList, ItemStack itemStack){
+        for (String keyword : keywordList){
+            if (itemStack.getItem().getKey().contains(keyword)){
+                return true;
+            }
+        }
+        return false;
+    }
+    protected boolean recipeInRecipeList(List<IRecipe> recipeList, IRecipe recipe){
+        for (IRecipe groupRecipe : recipeList){
+            if (groupRecipe.equals(recipe)){
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public RecipeGroup build(){
         List<IRecipe> unused_copy = new ArrayList<>(unusedRecipes);
         List<IRecipe> recipeGroupRecipes = new ArrayList<>();
         int removeOffset = 0;
-        for (int i = 0; i < unused_copy.size(); i++) {
+        for (int i = 0; i < unused_copy.size(); i++) { // Add exclusive Recipes
             IRecipe currentRecipe = unused_copy.get(i);
             if (currentRecipe instanceof RecipeShaped || currentRecipe instanceof RecipeShapeless){
                 ItemStack recipeItem = currentRecipe.getRecipeOutput();
-                boolean foundMatch = false;
-                for (ItemStack stack: excludeItemList) {
-                    if (recipeItem.itemID == stack.itemID && recipeItem.getMetadata() == stack.getMetadata()){
-                        foundMatch = true;
-                        continue;
-                    }
-                }
-                if (foundMatch){
+                if (stackInExcludeItem(recipeItem)){
                     continue;
                 }
-                for (Class clazz : exclusiveClassList){
-                    try {
-                        if (recipeItem.itemID < Block.blocksList.length){
-                            clazz.cast(Block.getBlock(recipeItem.itemID));
-                        } else {
-                            clazz.cast(recipeItem.getItem());
-                        }
-                        recipeGroupRecipes.add(currentRecipe);
-                        unusedRecipes.remove(i - removeOffset);
-                        removeOffset++;
-                        foundMatch = true;
-                        continue;
-                    } catch (ClassCastException e){
-                    }
-                    if (foundMatch){
-                        continue;
-                    }
-
-                }
-                if (foundMatch){
-                    continue;
-                }
-                for (ItemStack stack : exclusiveItemList){
-                    if (recipeItem.itemID == stack.itemID && recipeItem.getMetadata() == stack.getMetadata()){
-                        recipeGroupRecipes.add(currentRecipe);
-                        unusedRecipes.remove(i - removeOffset);
-                        removeOffset++;
-                        foundMatch = true;
-                        continue;
-                    }
-                }
-                if (foundMatch){
-                    continue;
-                }
-                for (String keyword : exclusiveKeywordList){
-                    if (recipeItem.getItem().getKey().contains(keyword)){
-                        recipeGroupRecipes.add(currentRecipe);
-                        unusedRecipes.remove(i-removeOffset);
-                        removeOffset++;
-                        foundMatch = true;
-                        continue;
-                    }
-                }
-                if (foundMatch){
+                if (stackInClassList(exclusiveClassList,recipeItem) || stackInItemList(exclusiveItemList, recipeItem) || stackInKeywordList(exclusiveKeywordList, recipeItem)) {
+                    recipeGroupRecipes.add(currentRecipe);
+                    unusedRecipes.remove(i - removeOffset);
+                    removeOffset++;
                     continue;
                 }
             }
         }
-        for (int i = 0; i < allRecipes.size(); i++) {
+        for (int i = 0; i < allRecipes.size(); i++) { // Add inclusive recipes
             IRecipe currentRecipe = allRecipes.get(i);
             if (currentRecipe instanceof RecipeShaped || currentRecipe instanceof RecipeShapeless){
                 ItemStack recipeItem = currentRecipe.getRecipeOutput();
-                boolean foundMatch = false;
-                for (ItemStack stack: excludeItemList) {
-                    if (recipeItem.itemID == stack.itemID && recipeItem.getMetadata() == stack.getMetadata()){
-                        foundMatch = true;
-                        continue;
-                    }
-                }
-                if (foundMatch){
+                if (stackInExcludeItem(recipeItem)){
                     continue;
                 }
-                for (IRecipe groupRecipe : recipeGroupRecipes){
-                    if (groupRecipe.equals(currentRecipe)){
-                        foundMatch = true;
-                        continue;
-                    }
-                }
-                if (foundMatch){
+                if (recipeInRecipeList(recipeGroupRecipes, currentRecipe)){ // Stack already in list
                     continue;
                 }
-                for (Class clazz : inclusiveClassList){
-                    try {
-                        if (recipeItem.itemID < Block.blocksList.length){
-                            clazz.cast(Block.getBlock(recipeItem.itemID));
-                        } else {
-                            clazz.cast(recipeItem.getItem());
-                        }
-                        recipeGroupRecipes.add(currentRecipe);
-                        foundMatch = true;
-                        continue;
-                    } catch (ClassCastException e){
-                    }
-                    if (foundMatch){
-                        continue;
-                    }
-
-                }
-                if (foundMatch){
-                    continue;
-                }
-                for (ItemStack stack : inclusiveItemList){
-                    if (recipeItem.itemID == stack.itemID && recipeItem.getMetadata() == stack.getMetadata()){
-                        recipeGroupRecipes.add(currentRecipe);
-                        foundMatch = true;
-                        continue;
-                    }
-                }
-                if (foundMatch){
-                    continue;
-                }
-                for (String keyword : inclusiveKeywordList){
-                    if (recipeItem.getItem().getKey().contains(keyword)){
-                        recipeGroupRecipes.add(currentRecipe);
-                        foundMatch = true;
-                        continue;
-                    }
-                }
-                if (foundMatch){
+                if (stackInClassList(inclusiveClassList, recipeItem) || stackInItemList(inclusiveItemList, recipeItem) || stackInKeywordList(inclusiveKeywordList, recipeItem)){
+                    recipeGroupRecipes.add(currentRecipe);
                     continue;
                 }
             }

@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import useless.legacyui.Gui.Slots.SlotNull;
+import useless.legacyui.LegacyUI;
 import useless.prismaticlibe.gui.slot.SlotCraftingDisplay;
 
 @Mixin(value = Container.class, remap = false)

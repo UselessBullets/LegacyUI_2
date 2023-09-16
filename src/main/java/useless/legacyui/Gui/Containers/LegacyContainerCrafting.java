@@ -91,12 +91,12 @@ public class LegacyContainerCrafting extends Container {
         // 3x9 inventory
         for (baseIterator = 0; baseIterator < 3; ++baseIterator) {
             for (subIterator = 0; subIterator < 9; ++subIterator) {
-                this.addSlot(new SlotResizable(this.inventoryPlayer, subIterator + baseIterator * 9 + 9, 153 + subIterator * 12, 112 + baseIterator * 12, 12));
+                this.addSlot(new SlotResizable(this.inventoryPlayer, subIterator + baseIterator * 9 + 9, 152 + subIterator * 12, 112 + baseIterator * 12, 12));
             }
         }
         // 1x9 hotbar
         for (baseIterator = 0; baseIterator < 9; ++baseIterator) {
-            this.addSlot(new SlotResizable(this.inventoryPlayer, baseIterator, 153 + baseIterator * 12, 154, 12));
+            this.addSlot(new SlotResizable(this.inventoryPlayer, baseIterator, 152 + baseIterator * 12, 154, 12));
         }
 
         this.onCraftMatrixChanged(this.craftMatrix);

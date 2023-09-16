@@ -227,7 +227,7 @@ public class GuiLegacyCrafting extends GuiContainer {
         craftingButton.setMuted(true);
         controlList.add(craftingButton);
 
-        inventoryRegion = new GuiRegion(100,GUIx + 149, GUIy + 94, 115, 75);
+        inventoryRegion = new GuiRegion(100,GUIx + 147, GUIy + 94, 116, 75);
 
         // Static Initialization
         currentTab = 0;
@@ -291,7 +291,7 @@ public class GuiLegacyCrafting extends GuiContainer {
             UtilGui.drawTexturedModalRect(this, GUIx + 19, GUIy + 108, 61, 175, 54, 54, 1f/guiTextureWidth);
         }
 
-        drawStringCenteredNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.inventory"),GUIx + 205, GUIy + 97, ModSettings.Colors.GuiLabelColor());
+        drawStringCenteredNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.inventory"),GUIx + 204, GUIy + 97, ModSettings.Colors.GuiLabelColor());
 
         String craftingString; // Text above crafting table
         if (ModSettings.Gui.ShowCraftingItemNamePreview() && showCraftDisplay){ // If crafting display rendered and render item names enabled

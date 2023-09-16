@@ -284,13 +284,17 @@ public class GuiLegacyCrafting extends GuiContainer {
         }
 
         drawStringCenteredNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.inventory"),GUIx + 205, GUIy + 97, ModSettings.Colors.GuiLabelColor());
-        String craftingString;
-        if (ModSettings.Gui.ShowCraftingItemNamePreview()){
-            craftingString = currentRecipe.getRecipeOutput().getDisplayName();
-            if (!LegacyContainerCrafting.isDicovered(currentRecipe.getRecipeOutput(), mc.statFileWriter, mc.thePlayer)){
+
+        String craftingString; // Text above crafting table
+        if (ModSettings.Gui.ShowCraftingItemNamePreview() && renderCraftingDisplay()){ // If crafting display rendered and render item names enabled
+            craftingString = currentRecipe.getRecipeOutput().getDisplayName(); // Get Item name
+            if (!LegacyContainerCrafting.isDicovered(currentRecipe.getRecipeOutput(), mc.statFileWriter, mc.thePlayer)){ // If undiscovered obscure it
                 craftingString = craftingString.replaceAll("[a-zA-Z]|[0-9]", "?");
             }
-        } else {
+            if (craftingString.length() > 21){ // If too long then cap to 21 characters
+                craftingString = craftingString.substring(0, 18) + "...";
+            }
+        } else { // Render default "Crafting" Text
             craftingString = I18n.getInstance().translateKey("legacyui.guilabel.crafting");
         }
 

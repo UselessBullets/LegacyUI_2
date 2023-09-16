@@ -33,14 +33,8 @@ public class LegacyCategoryManager {
         creativeCategories.add(creative.equipment);
         creativeCategories.add(creative.food);
         creativeCategories.add(creative.redstoneTransit);
-
-        /*ItemCategory natBlockCategory = CategoryManager.get(0);
-        ItemCategory otherBlockCategory = CategoryManager.get(1);
-        ItemCategory toolCategory = CategoryManager.get(2);
-        ItemCategory foodCategory = CategoryManager.get(3);
-        ItemCategory redstoneCategory = CategoryManager.get(4);
-        ItemCategory miscCategory = CategoryManager.get(5);
-        ItemCategory moddedCategory = CategoryManager.get(6);*/
+        creativeCategories.add(creative.misc);
+        creativeCategories.add(creative.modded);
     }
     public static class creative{
         public static ItemCategory equipment = new ItemCategoryBuilder(MOD_ID)
@@ -92,20 +86,105 @@ public class LegacyCategoryManager {
                 .addClass(ItemMinecart.class)
                 .addClass(ItemBoat.class)
                 .addClass(ItemSaddle.class)
+                .addClass(BlockPistonBase.class)
+                .addClass(BlockMotionSensor.class)
+                .addClass(BlockDoor.class)
+                .addClass(ItemDoor.class)
+                .addClass(BlockTrapDoor.class)
+                .addClass(BlockLamp.class)
+                .addClass(BlockLever.class)
+                .addClass(BlockButton.class)
+                .addClass(BlockPressurePlate.class)
+                .addItem(Item.basket)
                 .setIcon("redstonerail.png")
                 .setTranslationKey("redstone")
                 .build();
         public static ItemCategory natural = new ItemCategoryBuilder(MOD_ID)
-                .addClass(Block.class)
+                .addClass(BlockLeavesBase.class)
+                .addClass(BlockDirtPath.class)
+                .addClass(BlockLog.class)
+                .addClass(BlockMud.class)
+                .addClass(BlockFlower.class)
+                .addClass(BlockStone.class)
+                .addClass(BlockLayerBase.class)
+                .addClass(BlockMoss.class)
+                .addClass(BlockAlgae.class)
+                .addClass(BlockSand.class)
+                .addClass(BlockSoulSand.class)
+                .addItem(Block.netherrack)
+                .addItem(Block.pumpkin)
+                .addClass(BlockIce.class)
+                .addItem(Block.obsidian)
+                .addClass(BlockGlowStone.class)
+                .addClass(BlockBedrock.class)
+                .addClass(BlockClay.class)
+                .addClass(BlockSnow.class)
+                .addClass(BlockSponge.class)
+                .addClass(BlockCactus.class)
+                .addClass(BlockCobweb.class)
+                .addItem(Block.marble)
+                .addItem(Block.slate)
+                .addItem(Block.sandstone)
+                .addClass(BlockGrass.class)
+                .addClass(BlockGrassScorched.class)
+                .addItem(Block.dirt)
+                .addItem(Block.dirtScorched)
+                .addItem(Block.dirtScorchedRich)
+                .addClass(BlockFarmland.class)
+                .addKeyword("tile.ore.")
                 .setIcon("grass.png")
                 .setTranslationKey("natural")
                 .build();
         public static ItemCategory otherBlocks = new ItemCategoryBuilder(MOD_ID)
-                .addClass(Item.class)
+                .addClass(BlockWool.class)
+                .addClass(BlockFence.class)
+                .addClass(BlockFenceGate.class)
+                .addClass(BlockFenceChainlink.class)
+                .addClass(BlockTorch.class)
+                .addClass(BlockLadder.class)
+                .addClass(BlockSlab.class)
+                .addClass(BlockStairs.class)
+                .addClass(BlockGlass.class)
+                .addClass(BlockPumpkin.class)
+                .addClass(BlockTrommel.class)
+                .addClass(BlockWorkbench.class)
+                .addClass(BlockChest.class)
+                .addClass(BlockSign.class)
+                .addClass(BlockFurnace.class)
+                .addClass(BlockJukeBox.class)
+                .addClass(ItemSign.class)
+                .addClass(ItemPainting.class)
+                .addClass(ItemFlag.class)
+                .addClass(BlockIgneousNetherrack.class)
+                .addClass(BlockMobSpawner.class)
+                .addItem(Block.mobspawnerDeactivated)
+                .addItem(Block.permaice)
+                .addItem(Block.pillarMarble)
+                .addItem(Item.bed)
+                .addItem(Item.lanternFireflyRed)
+                .addItem(Item.lanternFireflyBlue)
+                .addItem(Item.lanternFireflyGreen)
+                .addItem(Item.lanternFireflyOrange)
+                .addKeyword("tile.block.")
+                .addKeyword(".polished")
+                .addKeyword(".cobble.")
+                .addKeyword(".planks.")
+                .addKeyword("tile.brick.")
                 .setIcon("bricks.png")
                 .setTranslationKey("construction")
                 .build();
-
+        public static ItemCategory misc = new ItemCategoryBuilder(MOD_ID)
+                .addClass(Block.class)
+                .addClass(Item.class)
+                .excludeModdedItems()
+                .setIcon("painting.png")
+                .setTranslationKey("misc")
+                .build();
+        public static ItemCategory modded = new ItemCategoryBuilder(MOD_ID)
+                .isDebug()
+                .setIcon("modded.png")
+                .setTranslationKey("modded")
+                .buildForModded();
     }
     public static class recipeBasics {
         public static RecipeGroup planks = new RecipeGroupBuilder()

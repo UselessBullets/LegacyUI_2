@@ -1,5 +1,7 @@
 package useless.legacyui.Sorting.Item;
 
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.crafting.CraftingManager;
 import net.minecraft.core.crafting.recipe.IRecipe;
@@ -11,17 +13,28 @@ import net.minecraft.core.player.inventory.ContainerPlayerCreative;
 import useless.legacyui.Helper.IconHelper;
 import useless.legacyui.LegacyUI;
 import useless.legacyui.Sorting.UtilSorting;
+import useless.prismaticlibe.PrismaticLibe;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ItemCategoryBuilder {
+    private static final List<String> modList = new ArrayList<>();
+    static {
+        Iterator modITerator = FabricLoader.getInstance().getAllMods().iterator();
+        while(modITerator.hasNext()) {
+            ModContainer mod = (ModContainer)modITerator.next();
+            modList.add(mod.getMetadata().getId());
+        }
+    }
     private static final List<ItemStack> allCreativeItems = ContainerPlayerCreative.creativeItems;
     private static final List<ItemStack> unusedCreativeItems = new ArrayList<>(allCreativeItems);
     private String key = "default";
     private final String modid;
     public int[] iconCoordinate = new int[]{0,0};
     private Boolean isDebug = false;
+    private Boolean excludeModdedItems = false;
     private final List<Class> inclusiveClassList = new ArrayList<>();
     private final List<ItemStack> inclusiveItemList = new ArrayList<>();
     private final List<String> inclusiveKeywordList = new ArrayList<>();
@@ -158,13 +171,26 @@ public class ItemCategoryBuilder {
         this.iconCoordinate = iconCoordinate;
         return this;
     }
+    public ItemCategoryBuilder excludeModdedItems(){
+        this.excludeModdedItems = true;
+        return this;
+    }
+    public boolean stackIsModded(ItemStack stack){
+        String itemModID = stack.getItemName().split("[.]")[1];
+        for (String modId: modList) {
+            if (itemModID.equals(modId)){
+                return true;
+            }
+        }
+        return false;
+    }
     public ItemCategory build(){
         List<ItemStack> unused_copy = new ArrayList<>(unusedCreativeItems);
         List<ItemStack> categoryItems = new ArrayList<>();
         int removeOffset = 0;
         for (int i = 0; i < unused_copy.size(); i++) { // Add exclusive Recipes
             ItemStack currentItem = unused_copy.get(i);
-            if (UtilSorting.stackInItemList(excludeItemList,currentItem)){
+            if (UtilSorting.stackInItemList(excludeItemList,currentItem) || (excludeModdedItems && stackIsModded(currentItem))){
                 continue;
             }
             if (UtilSorting.stackInClassList(exclusiveClassList,currentItem) || UtilSorting.stackInItemList(exclusiveItemList, currentItem) || UtilSorting.stackInKeywordList(exclusiveKeywordList, currentItem)) {
@@ -177,7 +203,7 @@ public class ItemCategoryBuilder {
         }
         for (int i = 0; i < allCreativeItems.size(); i++) { // Add inclusive recipes
             ItemStack currentItem = allCreativeItems.get(i);
-            if (UtilSorting.stackInItemList(excludeItemList,currentItem)){
+            if (UtilSorting.stackInItemList(excludeItemList,currentItem) || (excludeModdedItems && stackIsModded(currentItem))){
                 continue;
             }
             if (UtilSorting.stackInItemList(categoryItems, currentItem)){ // Stack already in list
@@ -186,6 +212,20 @@ public class ItemCategoryBuilder {
             if (UtilSorting.stackInClassList(inclusiveClassList, currentItem) || UtilSorting.stackInItemList(inclusiveItemList, currentItem) || UtilSorting.stackInKeywordList(inclusiveKeywordList, currentItem)){
                 categoryItems.add(currentItem);
                 continue;
+            }
+        }
+        ItemStack[] returnArray = new ItemStack[categoryItems.size()];
+        for (int i = 0; i < returnArray.length; i++) {
+            returnArray[i] = categoryItems.get(i);
+        }
+        return new ItemCategory(modid, key, iconCoordinate, returnArray);
+    }
+    public ItemCategory buildForModded(){
+        List<ItemStack> categoryItems = new ArrayList<>();
+        for (int i = 0; i < allCreativeItems.size(); i++) { // Add inclusive recipes
+            ItemStack currentItem = allCreativeItems.get(i);
+            if (stackIsModded(currentItem)){
+                categoryItems.add(currentItem);
             }
         }
         ItemStack[] returnArray = new ItemStack[categoryItems.size()];

@@ -384,13 +384,4 @@ public class LegacyContainerCrafting extends Container {
             return 10 + 27 -1 + number;
         }
     }
-    public ItemStack clickInventorySlot(InventoryAction action, int[] args, EntityPlayer player) {
-        if (args == null){
-            return null;
-        }
-        if (getSlot(args[0]) instanceof SlotCraftingDisplay || getSlot(args[0]) instanceof SlotNull){
-            return null;
-        }
-        return super.clickInventorySlot(action, args, player);
-    }
 }

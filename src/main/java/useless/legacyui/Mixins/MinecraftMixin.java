@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import useless.legacyui.Gui.GuiScreens.GuiLegacyCreative;
 import useless.legacyui.Gui.GuiScreens.GuiLegacyInventory;
 import useless.legacyui.ModSettings;
 
@@ -20,7 +21,7 @@ public class MinecraftMixin {
     @Inject(method = "getGuiInventory()Lnet/minecraft/client/gui/GuiInventory;", at = @At("RETURN"), cancellable = true)
     private void useCustomInventoryGuis(CallbackInfoReturnable<GuiInventory> cir){
         if (thePlayer.getGamemode() == Gamemode.creative && ModSettings.Gui.EnableLegacyInventoryCreative()){
-            cir.setReturnValue(new GuiInventoryCreative(thePlayer));
+            cir.setReturnValue(new GuiLegacyCreative(thePlayer));
         }
         if (thePlayer.getGamemode() == Gamemode.survival && ModSettings.Gui.EnableLegacyInventorySurvival()){
             cir.setReturnValue(new GuiLegacyInventory(thePlayer));

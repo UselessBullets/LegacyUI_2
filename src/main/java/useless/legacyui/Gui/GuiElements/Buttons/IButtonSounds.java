@@ -1,4 +1,4 @@
-package useless.legacyui.Gui.Buttons;
+package useless.legacyui.Gui.GuiElements.Buttons;
 
 public interface IButtonSounds {
 

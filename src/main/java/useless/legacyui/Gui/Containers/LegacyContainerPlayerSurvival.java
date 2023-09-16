@@ -16,7 +16,7 @@ public class LegacyContainerPlayerSurvival extends ContainerPlayer {
 
         inventorySlots.clear(); // Remove all slots made in super class
         for (int index = 0; index < 5; ++index){ // Null Slots to keep alignment with server
-            this.addSlot(new SlotNull(this.playerInv,index, -500, -500));
+            this.addSlot(new SlotNull(this.playerInv,index, -5000, -5000));
         }
         for (int index = 0; index < 4; ++index) { // Create Armor Slots
             this.addSlot(new SlotArmor(this, inventory, inventory.getSizeInventory() - 1 - index, 49, 8 + index * 18, index));

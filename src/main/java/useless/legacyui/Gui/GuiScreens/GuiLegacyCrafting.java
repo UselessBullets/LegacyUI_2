@@ -7,10 +7,12 @@ import net.minecraft.core.crafting.recipe.IRecipe;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.lang.I18n;
 import org.lwjgl.input.Keyboard;
-import useless.legacyui.Gui.Buttons.GuiAuditoryButton;
+import useless.legacyui.Gui.GuiElements.Buttons.GuiAuditoryButton;
 import useless.legacyui.Gui.Containers.LegacyContainerCrafting;
+import useless.legacyui.Gui.GuiElements.GuiRegion;
 import useless.legacyui.Helper.KeyboardHelper;
 import useless.legacyui.LegacySoundManager;
+import useless.legacyui.LegacyUI;
 import useless.legacyui.ModSettings;
 import useless.legacyui.Sorting.LegacyCategoryManager;
 import useless.legacyui.Sorting.Recipe.RecipeCategory;
@@ -31,6 +33,8 @@ public class GuiLegacyCrafting extends GuiContainer {
     public GuiAuditoryButton scrollUp;
     public GuiAuditoryButton scrollDown;
     public GuiAuditoryButton craftingButton;
+    public GuiRegion inventoryRegion;
+    private static boolean showCraftDisplay = false;
     private static boolean previousShowDisplay = false;
     public GuiLegacyCrafting(EntityPlayer player, int craftingSize){
         super((new LegacyContainerCrafting(player.inventory, craftingSize)));
@@ -223,6 +227,8 @@ public class GuiLegacyCrafting extends GuiContainer {
         craftingButton.setMuted(true);
         controlList.add(craftingButton);
 
+        inventoryRegion = new GuiRegion(100,GUIx + 149, GUIy + 94, 115, 75);
+
         // Static Initialization
         currentTab = 0;
         currentScroll = 0;
@@ -245,7 +251,7 @@ public class GuiLegacyCrafting extends GuiContainer {
             slotButtons[i].enabled = i < recipeGroups.length;
         }
 
-        ((LegacyContainerCrafting)inventorySlots).setRecipes(player, mc.statFileWriter, renderCraftingDisplay());
+        ((LegacyContainerCrafting)inventorySlots).setRecipes(player, mc.statFileWriter, showCraftDisplay);
     }
     public void craft(){
         if(((LegacyContainerCrafting)inventorySlots).craft(mc, inventorySlots.windowId)){
@@ -260,8 +266,10 @@ public class GuiLegacyCrafting extends GuiContainer {
     }
     public void drawScreen(int x, int y, float renderPartialTicks) {
         handleInputs();
-        if (previousShowDisplay != renderCraftingDisplay()){
-            previousShowDisplay = renderCraftingDisplay();
+        previousShowDisplay = showCraftDisplay;
+        renderCraftingDisplay(x, y);
+        if (previousShowDisplay != showCraftDisplay){
+            previousShowDisplay = showCraftDisplay;
             setContainerRecipes();
         }
         super.drawScreen(x, y, renderPartialTicks);
@@ -279,14 +287,14 @@ public class GuiLegacyCrafting extends GuiContainer {
         UtilGui.drawTexturedModalRect(this, GUIx + (tabWidth - 1) * currentTab, GUIy - 2, 0,175, tabWidth, 30, 1f/guiTextureWidth); // Render Selected Tab
 
         IRecipe currentRecipe = (IRecipe) currentCategory().getRecipeGroups(isSmall())[currentSlot].getRecipes(isSmall())[currentScroll];
-        if (currentCategory().getRecipeGroups(isSmall())[currentSlot].getContainer(currentScroll, isSmall()).inventorySlots.size() <= 5 && renderCraftingDisplay()){ // 2x2 Crafting overlay
+        if (currentCategory().getRecipeGroups(isSmall())[currentSlot].getContainer(currentScroll, isSmall()).inventorySlots.size() <= 5 && showCraftDisplay){ // 2x2 Crafting overlay
             UtilGui.drawTexturedModalRect(this, GUIx + 19, GUIy + 108, 61, 175, 54, 54, 1f/guiTextureWidth);
         }
 
         drawStringCenteredNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.inventory"),GUIx + 205, GUIy + 97, ModSettings.Colors.GuiLabelColor());
 
         String craftingString; // Text above crafting table
-        if (ModSettings.Gui.ShowCraftingItemNamePreview() && renderCraftingDisplay()){ // If crafting display rendered and render item names enabled
+        if (ModSettings.Gui.ShowCraftingItemNamePreview() && showCraftDisplay){ // If crafting display rendered and render item names enabled
             craftingString = currentRecipe.getRecipeOutput().getDisplayName(); // Get Item name
             if (!LegacyContainerCrafting.isDicovered(currentRecipe.getRecipeOutput(), mc.statFileWriter, mc.thePlayer)){ // If undiscovered obscure it
                 craftingString = craftingString.replaceAll("[a-zA-Z]|[0-9]", "?");
@@ -328,7 +336,11 @@ public class GuiLegacyCrafting extends GuiContainer {
             UtilGui.drawTexturedModalRect(this,GUIx + x - 1,GUIy + y + 25, 167, 175, 18,18, 1f/guiTextureWidth);
         }
     }
-    public boolean renderCraftingDisplay() {
+    public void renderCraftingDisplay(int mouseX, int mouseY) {
+        if (inventoryRegion.isHovered(mouseX, mouseY)){
+            showCraftDisplay = true;
+            return;
+        }
         boolean holdingItem = mc.thePlayer.inventory.getHeldItemStack() != null;
 
         boolean isItem = false;
@@ -343,6 +355,6 @@ public class GuiLegacyCrafting extends GuiContainer {
             craftingButton.enabled = false;
         }
 
-        return result;
+        showCraftDisplay = result;
     }
 }

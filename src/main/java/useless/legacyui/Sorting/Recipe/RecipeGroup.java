@@ -8,10 +8,9 @@ public class RecipeGroup {
     private final Object[] recipes;
     private final Object[] smallRecipes;
 
-    private short fourSlotRecipes; // Number of 2x2 recipes in the group
-
     public RecipeGroup(Object[] recipes){
-        fourSlotRecipes = 0;
+        // Number of 2x2 recipes in the group
+        short fourSlotRecipes = 0;
         this.recipes = recipes;
         for (int i = 0; i < recipes.length; i++){
             ContainerGuidebookRecipeCrafting currentContainer = getContainer(i, false);
@@ -43,7 +42,7 @@ public class RecipeGroup {
     }
 
     public int getSmallRecipesAmount(){
-        return fourSlotRecipes;
+        return smallRecipes.length;
     }
 
     public Object[] getRecipes(boolean isSmall) {

@@ -1,11 +1,15 @@
 package useless.legacyui.Gui.Containers;
 
+import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.player.inventory.ContainerPlayerCreative;
 import net.minecraft.core.player.inventory.InventoryPlayer;
 import net.minecraft.core.player.inventory.slot.Slot;
 import net.minecraft.core.player.inventory.slot.SlotArmor;
 import net.minecraft.core.player.inventory.slot.SlotCreative;
+import useless.legacyui.Gui.GuiScreens.GuiLegacyCreative;
 import useless.legacyui.Gui.Slots.SlotNull;
+import useless.legacyui.Sorting.Item.ItemCategory;
+import useless.legacyui.Sorting.LegacyCategoryManager;
 
 public class LegacyContainerPlayerCreative extends ContainerPlayerCreative {
     public static int slotsWide = 13;
@@ -15,6 +19,7 @@ public class LegacyContainerPlayerCreative extends ContainerPlayerCreative {
         super(inventory, isSinglePlayer);
         this.inventory = inventory;
         createSlots();
+        setSlots();
     }
     public void createSlots() {
         inventorySlots.clear(); // Remove all slots made in super class
@@ -36,7 +41,20 @@ public class LegacyContainerPlayerCreative extends ContainerPlayerCreative {
         for (int i = 0; i < slotsWide * slotsTall; ++i) {
             int x = i % slotsWide;
             int y = i / slotsWide;
-            this.addSlot(new SlotCreative(this.creativeSlotsStart + i, 12 + x * 18, 46 + y * 18, ContainerPlayerCreative.creativeItems.get(i)));
+            this.addSlot(new SlotCreative(this.creativeSlotsStart + i, 12 + x * 18, 46 + y * 18, null));
+        }
+    }
+    public void setSlots(){
+        ItemCategory currentCategory = LegacyCategoryManager.creativeCategories.get(GuiLegacyCreative.currentTab);
+        for (int i = 0; i < slotsWide * slotsTall; ++i) {
+            ItemStack item;
+            if (i < currentCategory.itemStacks.length){
+                item = currentCategory.itemStacks[i];
+            } else {
+                item = null;
+            }
+            ((SlotCreative) this.inventorySlots.get(creativeSlotsStart+i)).item = item;
+
         }
     }
 }

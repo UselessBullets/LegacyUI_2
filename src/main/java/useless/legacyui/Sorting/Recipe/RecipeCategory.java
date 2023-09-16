@@ -13,7 +13,7 @@ public class RecipeCategory {
     private RecipeGroup[] smallGroups;
     public RecipeCategory(String modid, String translationKey , int[] iconCoordinate, RecipeGroup[]recipes){
         assert recipes.length > 0;
-        this.key = (modid + ".categories." + translationKey).replace("..", ".");
+        this.key = (modid + ".categories.recipe." + translationKey).replace("..", ".");
         this.iconCoordinate = iconCoordinate;
         this.recipeGroups = recipes;
         List<RecipeGroup> _groups = new ArrayList<RecipeGroup>();

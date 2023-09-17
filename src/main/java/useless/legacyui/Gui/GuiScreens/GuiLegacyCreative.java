@@ -155,10 +155,10 @@ public class GuiLegacyCreative extends GuiInventory implements IGuiController {
         scrollBar = new GuiRegion(100, GUIx + 251, GUIy + 43, 15, 112);
         bottomCreativeSlots = new GuiRegion(101, GUIx + 11, GUIy + 135, 234, 18);
         topCreativeSlots = new GuiRegion(101, GUIx + 11, GUIy + 45, 234, 18);
-        clearButton = new GuiAuditoryButton(controlList.size() + 2, GUIx + 209, GUIy + 158, 20, 20, "X");
+        clearButton = new GuiAuditoryButton(controlList.size() + 2, GUIx + 221, GUIy + 158, 20, 20, "X");
         clearButton.visible = false;
         controlList.add(clearButton);
-        craftButton = new GuiAuditoryButton(controlList.size() + 2, GUIx + 27, GUIy + 158, 20, 20, "");
+        craftButton = new GuiAuditoryButton(controlList.size() + 2, GUIx + 31, GUIy + 158, 20, 20, "");
         craftButton.visible = false;
         controlList.add(craftButton);
 

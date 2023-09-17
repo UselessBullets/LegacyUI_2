@@ -21,3 +21,4 @@ Needed Things
 - Split screen
 - Flag gui
 - Random pitch offset to gui sounds
+- Swap xy buttons in menus only

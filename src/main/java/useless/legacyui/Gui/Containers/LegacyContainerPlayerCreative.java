@@ -37,7 +37,7 @@ public class LegacyContainerPlayerCreative extends ContainerPlayerCreative {
             }
         }
         for (int column = 0; column < 9; ++column) { // Create Hotbar slots
-            this.addSlot(new Slot(inventory, column, 48 + column * 18, 160));
+            this.addSlot(new Slot(inventory, column, 56 + column * 18, 160));
         }
         this.creativeSlotsStart = this.inventorySlots.size();
         for (int i = 0; i < slotsWide * slotsTall; ++i) {
@@ -45,6 +45,8 @@ public class LegacyContainerPlayerCreative extends ContainerPlayerCreative {
             int y = i / slotsWide;
             this.addSlot(new SlotCreative(this.creativeSlotsStart + i, 12 + x * 18, 46 + y * 18, null));
         }
+        this.addSlot(new SlotNull(this.playerInv,inventorySlots.size(), 223, 160));
+        this.addSlot(new SlotNull(this.playerInv,inventorySlots.size(), 33, 160));
     }
     public int getCreativeSlotsStart(){
         return creativeSlotsStart;

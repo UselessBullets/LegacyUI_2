@@ -32,7 +32,7 @@ public class LegacyContainerPlayerCreative extends ContainerPlayerCreative {
             this.addSlot(new SlotNull(this.playerInv,index, -5000, -5000));
         }
         for (int index = 0; index < 4; ++index) { // Create Armor Slots
-            this.addSlot(new SlotNull(this.playerInv, index + 5, -5000, -5000));
+            this.addSlot(new SlotArmor(this, inventory, inventory.getSizeInventory() - 1 - index, -5000, -5000, index));
         }
         for (int row = 0; row < 3; ++row) { // Create Main Inventory Slots
             for (int column = 0; column < 9; ++column) {
@@ -67,7 +67,6 @@ public class LegacyContainerPlayerCreative extends ContainerPlayerCreative {
                 item = null;
             }
             ((SlotCreative) this.inventorySlots.get(creativeSlotsStart+i)).item = item;
-
         }
     }
     public ItemStack clickInventorySlot(InventoryAction action, int[] args, EntityPlayer player) {

@@ -25,14 +25,14 @@ public class GuiLegacyCreative extends GuiInventory {
     public static int currentTab = 0;
     public static int currentRow = 0;
     private static float scrollProgress = 0f;
-    protected LegacyContainerPlayerCreative container;
+    public static LegacyContainerPlayerCreative container;
     protected GuiRegion scrollBar;
     protected GuiAuditoryButton clearButton;
     protected GuiAuditoryButton[] tabButtons = new GuiAuditoryButton[8];
     public GuiLegacyCreative(EntityPlayer player) {
         super(player);
         this.player = player;
-        this.container = (LegacyContainerPlayerCreative)player.inventorySlots;
+        container = (LegacyContainerPlayerCreative)player.inventorySlots;
     }
     public void scrollTab(int direction){
         if (direction > 0){

@@ -44,12 +44,17 @@ public class LegacyContainerPlayerCreative extends ContainerPlayerCreative {
             this.addSlot(new SlotCreative(this.creativeSlotsStart + i, 12 + x * 18, 46 + y * 18, null));
         }
     }
+    public static int getTotalRows(){
+        ItemCategory currentCategory = LegacyCategoryManager.creativeCategories.get(GuiLegacyCreative.currentTab);
+        return (int) Math.ceil((double) currentCategory.itemStacks.length / slotsWide);
+    }
     public void setSlots(){
         ItemCategory currentCategory = LegacyCategoryManager.creativeCategories.get(GuiLegacyCreative.currentTab);
         for (int i = 0; i < slotsWide * slotsTall; ++i) {
             ItemStack item;
-            if (i < currentCategory.itemStacks.length){
-                item = currentCategory.itemStacks[i];
+            int index = i +  + (GuiLegacyCreative.currentRow * slotsWide);
+            if (index < currentCategory.itemStacks.length){
+                item = currentCategory.itemStacks[index];
             } else {
                 item = null;
             }

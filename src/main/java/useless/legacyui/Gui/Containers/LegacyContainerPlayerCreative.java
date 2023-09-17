@@ -1,7 +1,5 @@
 package useless.legacyui.Gui.Containers;
 
-import net.minecraft.core.InventoryAction;
-import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.player.inventory.ContainerPlayerCreative;
 import net.minecraft.core.player.inventory.InventoryPlayer;
@@ -10,7 +8,6 @@ import net.minecraft.core.player.inventory.slot.SlotArmor;
 import net.minecraft.core.player.inventory.slot.SlotCreative;
 import useless.legacyui.Gui.GuiScreens.GuiLegacyCreative;
 import useless.legacyui.Gui.Slots.SlotNull;
-import useless.legacyui.LegacyUI;
 import useless.legacyui.Sorting.Item.ItemCategory;
 import useless.legacyui.Sorting.LegacyCategoryManager;
 
@@ -61,17 +58,12 @@ public class LegacyContainerPlayerCreative extends ContainerPlayerCreative {
         for (int i = 0; i < slotsWide * slotsTall; ++i) {
             ItemStack item;
             int index = i +  + (GuiLegacyCreative.currentRow * slotsWide);
-            if (index < currentCategory.itemStacks.length){
+            if (index < currentCategory.itemStacks.length && index >= 0){
                 item = currentCategory.itemStacks[index];
             } else {
                 item = null;
             }
             ((SlotCreative) this.inventorySlots.get(creativeSlotsStart+i)).item = item;
         }
-    }
-    public ItemStack clickInventorySlot(InventoryAction action, int[] args, EntityPlayer player) {
-        LegacyUI.LOGGER.info(String.valueOf(action));
-        LegacyUI.LOGGER.info(Arrays.toString(args));
-        return super.clickInventorySlot(action, args, player);
     }
 }

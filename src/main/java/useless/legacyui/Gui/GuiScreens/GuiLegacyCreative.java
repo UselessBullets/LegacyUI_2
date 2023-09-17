@@ -11,6 +11,7 @@ import useless.legacyui.Gui.GuiElements.Buttons.GuiAuditoryButton;
 import useless.legacyui.Gui.GuiElements.GuiRegion;
 import useless.legacyui.Helper.KeyboardHelper;
 import useless.legacyui.LegacySoundManager;
+import useless.legacyui.LegacyUI;
 import useless.legacyui.ModSettings;
 import useless.legacyui.Sorting.LegacyCategoryManager;
 
@@ -28,6 +29,7 @@ public class GuiLegacyCreative extends GuiInventory {
     public static LegacyContainerPlayerCreative container;
     protected GuiRegion scrollBar;
     protected GuiAuditoryButton clearButton;
+    protected GuiAuditoryButton craftButton;
     protected GuiAuditoryButton[] tabButtons = new GuiAuditoryButton[8];
     public GuiLegacyCreative(EntityPlayer player) {
         super(player);
@@ -59,10 +61,23 @@ public class GuiLegacyCreative extends GuiInventory {
             currentTab += tabAmount;
         }
         currentTab = Math.min(currentTab, tabAmount-1);
-        currentRow = 0;
+        selectRow(0);
         setContainerSlots();
     }
+    public void selectRow(int value){
+        boolean doContainer = false;
+        if (value != currentRow){
+            doContainer = true;
+        }
+        currentRow = value;
+        currentRow = Math.min(currentRow, (LegacyContainerPlayerCreative.getTotalRows()-6));
+        currentRow = Math.max(currentRow,0);
+        if (doContainer){
+            setContainerSlots();
+        }
+    }
     public void handleInputs(){
+        selectRow(currentRow + (Mouse.getDWheel()/-120));
         boolean shifted = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
         if (KeyboardHelper.isKeyPressedThisFrame(mc.gameSettings.keyRight.keyCode()) || KeyboardHelper.isKeyPressedThisFrame(mc.gameSettings.keyLookRight.keyCode())){
             if (shifted){
@@ -85,6 +100,9 @@ public class GuiLegacyCreative extends GuiInventory {
                 clearHotbar();
             }
         }
+        if (guibutton == craftButton){
+            openCrafting();
+        }
         for (int i = 0; i < tabButtons.length; i++) {
             if (tabButtons[i] == guibutton){
                 selectTab(i);
@@ -101,6 +119,12 @@ public class GuiLegacyCreative extends GuiInventory {
         for (int i = container.getCreativeSlotsStart()-10; i < container.getCreativeSlotsStart(); ++i) {
             mc.playerController.doInventoryAction(container.windowId, InventoryAction.CREATIVE_DELETE, new int[]{i}, player);
         }
+    }
+    protected void openCrafting(){
+        LegacySoundManager.volume = 0;
+        this.onGuiClosed();
+        mc.displayGuiScreen(new GuiLegacyCrafting(player, 4));
+        LegacySoundManager.volume = 1f;
     }
     public void setContainerSlots(){
         for (int i = 0; i < tabButtons.length; i++) { // Only enable buttons if there is a corresponding recipe group
@@ -125,12 +149,15 @@ public class GuiLegacyCreative extends GuiInventory {
         }
 
         scrollBar = new GuiRegion(100, GUIx + 251, GUIy + 43, 15, 112);
-        clearButton = new GuiAuditoryButton(controlList.size() + 2, GUIx + 209, GUIy + 159, 18, 18, "X");
+        clearButton = new GuiAuditoryButton(controlList.size() + 2, GUIx + 209, GUIy + 158, 20, 20, "X");
         clearButton.visible = false;
         controlList.add(clearButton);
+        craftButton = new GuiAuditoryButton(controlList.size() + 2, GUIx + 27, GUIy + 158, 20, 20, "");
+        craftButton.visible = false;
+        controlList.add(craftButton);
 
-        currentTab = 0;
-        currentRow = 0;
+        selectTab(0);
+        selectRow(0);
         setContainerSlots();
     }
     public void drawScreen(int x, int y, float renderPartialTicks) {
@@ -138,19 +165,19 @@ public class GuiLegacyCreative extends GuiInventory {
         if (scrollBar.isHovered(x,y)){
             if (Mouse.isButtonDown(0)){
                 scrollProgress = (y-scrollBar.getY())/ (float)scrollBar.getHeight();
-                currentRow = Math.round((LegacyContainerPlayerCreative.getTotalRows() - LegacyContainerPlayerCreative.slotsTall) * scrollProgress);
+                selectRow(Math.round((LegacyContainerPlayerCreative.getTotalRows() - LegacyContainerPlayerCreative.slotsTall) * scrollProgress));
                 if (LegacyContainerPlayerCreative.getTotalRows() <= LegacyContainerPlayerCreative.slotsTall){
                     scrollProgress = 0f;
                 }
-                currentRow = Math.max(currentRow,0);
 
                 setContainerSlots();
             }
         }
         super.drawScreen(x,y, renderPartialTicks);
         UtilGui.bindTexture("/assets/legacyui/gui/legacycreative.png");
-        UtilGui.drawTexturedModalRect(this, clearButton.xPosition, clearButton.yPosition, clearButton.isHovered(x, y) ? 146+18:146, 184, clearButton.width, clearButton.height, 1f/guiTextureWidth); // draw clearbutton
-        drawStringCentered(fontRenderer, clearButton.displayString, clearButton.xPosition + (clearButton.width/2), clearButton.yPosition + 5, 0xFFFFFF);
+        UtilGui.drawTexturedModalRect(this, craftButton.xPosition, craftButton.yPosition, craftButton.isHovered(x, y) ? 186+craftButton.width:186, 184, craftButton.width, craftButton.height, 1f/guiTextureWidth); // draw craftButton
+        UtilGui.drawTexturedModalRect(this, clearButton.xPosition, clearButton.yPosition, clearButton.isHovered(x, y) ? 146+clearButton.width:146, 184, clearButton.width, clearButton.height, 1f/guiTextureWidth); // draw clearbutton
+        drawStringCentered(fontRenderer, clearButton.displayString, clearButton.xPosition + (clearButton.width/2), clearButton.yPosition + 6, 0xFFFFFF);
     }
     protected void drawGuiContainerForegroundLayer(){
     }

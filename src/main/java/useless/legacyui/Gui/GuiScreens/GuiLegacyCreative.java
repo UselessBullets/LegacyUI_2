@@ -2,6 +2,7 @@ package useless.legacyui.Gui.GuiScreens;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiInventory;
+import net.minecraft.core.InventoryAction;
 import net.minecraft.core.entity.player.EntityPlayer;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -16,6 +17,7 @@ import useless.legacyui.Sorting.LegacyCategoryManager;
 import java.util.Arrays;
 
 public class GuiLegacyCreative extends GuiInventory {
+    private EntityPlayer player;
     private static int GUIx;
     private static int GUIy;
     private static final int guiTextureWidth = 512;
@@ -29,6 +31,7 @@ public class GuiLegacyCreative extends GuiInventory {
     protected GuiAuditoryButton[] tabButtons = new GuiAuditoryButton[8];
     public GuiLegacyCreative(EntityPlayer player) {
         super(player);
+        this.player = player;
         this.container = (LegacyContainerPlayerCreative)player.inventorySlots;
     }
     public void scrollTab(int direction){
@@ -89,14 +92,14 @@ public class GuiLegacyCreative extends GuiInventory {
         }
     }
     private void clearInventory(){
-        for (int i = 0; i < this.container.playerInv.getSizeInventory(); ++i) {
-            this.container.playerInv.setInventorySlotContents(i, null);
+        for (int i = 0; i < container.getCreativeSlotsStart(); ++i) {
+            mc.playerController.doInventoryAction(container.windowId, InventoryAction.CREATIVE_DELETE, new int[]{i}, player);
         }
-        Arrays.fill(this.container.playerInv.armorInventory, null);
+
     }
     private void clearHotbar(){
-        for (int i = 0; i < 9; ++i) {
-            this.container.playerInv.setInventorySlotContents(i, null);
+        for (int i = container.getCreativeSlotsStart()-10; i < container.getCreativeSlotsStart(); ++i) {
+            mc.playerController.doInventoryAction(container.windowId, InventoryAction.CREATIVE_DELETE, new int[]{i}, player);
         }
     }
     public void setContainerSlots(){

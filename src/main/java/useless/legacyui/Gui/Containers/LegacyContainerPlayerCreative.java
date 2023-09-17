@@ -1,5 +1,7 @@
 package useless.legacyui.Gui.Containers;
 
+import net.minecraft.core.InventoryAction;
+import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.player.inventory.ContainerPlayerCreative;
 import net.minecraft.core.player.inventory.InventoryPlayer;
@@ -8,8 +10,11 @@ import net.minecraft.core.player.inventory.slot.SlotArmor;
 import net.minecraft.core.player.inventory.slot.SlotCreative;
 import useless.legacyui.Gui.GuiScreens.GuiLegacyCreative;
 import useless.legacyui.Gui.Slots.SlotNull;
+import useless.legacyui.LegacyUI;
 import useless.legacyui.Sorting.Item.ItemCategory;
 import useless.legacyui.Sorting.LegacyCategoryManager;
+
+import java.util.Arrays;
 
 public class LegacyContainerPlayerCreative extends ContainerPlayerCreative {
     public static int slotsWide = 13;
@@ -31,7 +36,7 @@ public class LegacyContainerPlayerCreative extends ContainerPlayerCreative {
         }
         for (int row = 0; row < 3; ++row) { // Create Main Inventory Slots
             for (int column = 0; column < 9; ++column) {
-                this.addSlot(new SlotNull(this.playerInv, row * 9 + column + 9, -5000,-5000));
+                this.addSlot(new Slot(this.playerInv, row * 9 + column + 9, -5000,-5000));
             }
         }
         for (int column = 0; column < 9; ++column) { // Create Hotbar slots
@@ -43,6 +48,9 @@ public class LegacyContainerPlayerCreative extends ContainerPlayerCreative {
             int y = i / slotsWide;
             this.addSlot(new SlotCreative(this.creativeSlotsStart + i, 12 + x * 18, 46 + y * 18, null));
         }
+    }
+    public int getCreativeSlotsStart(){
+        return creativeSlotsStart;
     }
     public static int getTotalRows(){
         ItemCategory currentCategory = LegacyCategoryManager.creativeCategories.get(GuiLegacyCreative.currentTab);
@@ -61,5 +69,10 @@ public class LegacyContainerPlayerCreative extends ContainerPlayerCreative {
             ((SlotCreative) this.inventorySlots.get(creativeSlotsStart+i)).item = item;
 
         }
+    }
+    public ItemStack clickInventorySlot(InventoryAction action, int[] args, EntityPlayer player) {
+        LegacyUI.LOGGER.info(String.valueOf(action));
+        LegacyUI.LOGGER.info(Arrays.toString(args));
+        return super.clickInventorySlot(action, args, player);
     }
 }

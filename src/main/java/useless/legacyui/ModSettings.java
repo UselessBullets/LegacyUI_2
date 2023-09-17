@@ -13,7 +13,8 @@ public class ModSettings {
         props.setProperty("CraftingHideUndiscoveredItems","true"); //
         props.setProperty("ExperimentalQuickStackFix", "false"); //
         props.setProperty("ExperimentalQuickStackFixDelay", "50"); //
-        props.setProperty("GuiLabelColor", "404040"); //
+        props.setProperty("GuiLabelColor", "404040");
+        props.setProperty("GuiPromptColor", "FFFFFF");//
         props.setProperty("HighlightColor", "FF0000"); //
         props.setProperty("GuiBackgroundColor", "90101010"); //
         props.setProperty("OverrideLabelModColor", "false"); //
@@ -24,6 +25,7 @@ public class ModSettings {
         props.setProperty("EnableLegacyInventoryCreative", "true");
         props.setProperty("ShowCraftingItemNamePreview", "true");
         props.setProperty("UseRandomPitch", "false");
+        props.setProperty("GuiControllerType", "4");
         config = new ConfigHandler(LegacyUI.MOD_ID, props);
     }
     public static class Gui {
@@ -35,6 +37,7 @@ public class ModSettings {
         private static final boolean enableLegacyInventorySurvival = config.getBoolean("EnableLegacyInventorySurvival");
         private static final boolean enableLegacyInventoryCreative = config.getBoolean("EnableLegacyInventoryCreative");
         private static final boolean showCraftingItemNamePreview = config.getBoolean("ShowCraftingItemNamePreview");
+        private static final int guiControllerType = Math.max(Math.min(config.getInt("GuiControllerType"),16), 0);
         public static boolean HideUndiscoveredItems(){
             return hideUndiscoveredItems;
         }
@@ -55,6 +58,7 @@ public class ModSettings {
         public static boolean ShowCraftingItemNamePreview(){
             return showCraftingItemNamePreview;
         }
+        public static int GuiControllerType() {return guiControllerType;}
     }
     public static class Colors {
         private static final boolean overrideLabelModColor = config.getBoolean("OverrideLabelModColor");
@@ -68,6 +72,7 @@ public class ModSettings {
         }
         private static final int highlightColor = Integer.decode("0X" + config.getString("HighlightColor"));
         private static final int guiBackgroundColor = ((Integer.decode("0X" + config.getString("GuiBackgroundColor").substring(0,2)) << 24) + Integer.decode("0X" + config.getString("GuiBackgroundColor").substring(2)));
+        private static final int guiPromptColor = Integer.decode("0X" + config.getString("GuiPromptColor"));
         public static int GuiLabelColor(){
             return guiLabelColor;
         }
@@ -76,6 +81,9 @@ public class ModSettings {
         }
         public static int GuiBackgroundColor(){
             return guiBackgroundColor;
+        }
+        public static int GuiPromptColor(){
+            return guiPromptColor;
         }
     }
     public static class Sounds {

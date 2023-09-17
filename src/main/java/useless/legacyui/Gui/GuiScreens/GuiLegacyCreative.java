@@ -6,10 +6,12 @@ import net.minecraft.client.input.InputType;
 import net.minecraft.client.input.controller.ControllerInput;
 import net.minecraft.core.InventoryAction;
 import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.lang.I18n;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import useless.legacyui.Gui.Containers.LegacyContainerPlayerCreative;
 import useless.legacyui.Gui.GuiElements.Buttons.GuiAuditoryButton;
+import useless.legacyui.Gui.GuiElements.GuiButtonPrompt;
 import useless.legacyui.Gui.GuiElements.GuiRegion;
 import useless.legacyui.Gui.IGuiController;
 import useless.legacyui.Helper.KeyboardHelper;
@@ -17,7 +19,9 @@ import useless.legacyui.LegacySoundManager;
 import useless.legacyui.ModSettings;
 import useless.legacyui.Sorting.LegacyCategoryManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class GuiLegacyCreative extends GuiInventory implements IGuiController {
     private EntityPlayer player;
@@ -35,6 +39,7 @@ public class GuiLegacyCreative extends GuiInventory implements IGuiController {
     protected GuiAuditoryButton clearButton;
     protected GuiAuditoryButton craftButton;
     protected GuiAuditoryButton[] tabButtons = new GuiAuditoryButton[8];
+    public List<GuiButtonPrompt> prompts = new ArrayList<>();
     public GuiLegacyCreative(EntityPlayer player) {
         super(player);
         this.player = player;
@@ -162,6 +167,12 @@ public class GuiLegacyCreative extends GuiInventory implements IGuiController {
         craftButton.visible = false;
         controlList.add(craftButton);
 
+        I18n translator = I18n.getInstance();
+        prompts.add(new GuiButtonPrompt( 101, 50, this.height-30, 0, 3,translator.translateKey("legacyui.prompt.takeone")));
+        prompts.add(new GuiButtonPrompt( 102, prompts.get(prompts.size()-1).xPosition + prompts.get(prompts.size()-1).width + 3, this.height-30, 2, 3,translator.translateKey("legacyui.prompt.takestack")));
+        prompts.add(new GuiButtonPrompt( 102, prompts.get(prompts.size()-1).xPosition + prompts.get(prompts.size()-1).width + 3, this.height-30, 1, 3,translator.translateKey("legacyui.prompt.back")));
+        prompts.add(new GuiButtonPrompt( 102, prompts.get(prompts.size()-1).xPosition + prompts.get(prompts.size()-1).width + 3, this.height-30, 9,10, 3,translator.translateKey("legacyui.prompt.tabselect")));
+
         selectTab(0);
         selectRow(0);
         setContainerSlots();
@@ -195,7 +206,12 @@ public class GuiLegacyCreative extends GuiInventory implements IGuiController {
         UtilGui.bindTexture("/assets/legacyui/gui/legacycreative.png");
         UtilGui.drawTexturedModalRect(this, craftButton.xPosition, craftButton.yPosition, craftButton.isHovered(x, y) ? 186+craftButton.width:186, 184, craftButton.width, craftButton.height, 1f/guiTextureWidth); // draw craftButton
         UtilGui.drawTexturedModalRect(this, clearButton.xPosition, clearButton.yPosition, clearButton.isHovered(x, y) ? 146+clearButton.width:146, 184, clearButton.width, clearButton.height, 1f/guiTextureWidth); // draw clearbutton
-        drawStringCentered(fontRenderer, clearButton.displayString, clearButton.xPosition + (clearButton.width/2), clearButton.yPosition + 6, 0xFFFFFF);
+        drawStringCentered(fontRenderer, clearButton.displayString, clearButton.xPosition + (clearButton.width/2), clearButton.yPosition + 6, ModSettings.Colors.GuiPromptColor());
+        if (mc.inputType == InputType.CONTROLLER){
+            for (GuiButtonPrompt prompt: prompts) {
+                prompt.drawPrompt(mc, x, y);
+            }
+        }
     }
     protected void drawGuiContainerForegroundLayer(){
     }

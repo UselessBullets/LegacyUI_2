@@ -2,6 +2,8 @@ package useless.legacyui.Gui.GuiScreens;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiInventory;
+import net.minecraft.client.input.InputType;
+import net.minecraft.client.input.controller.ControllerInput;
 import net.minecraft.core.InventoryAction;
 import net.minecraft.core.entity.player.EntityPlayer;
 import org.lwjgl.input.Keyboard;
@@ -9,15 +11,15 @@ import org.lwjgl.input.Mouse;
 import useless.legacyui.Gui.Containers.LegacyContainerPlayerCreative;
 import useless.legacyui.Gui.GuiElements.Buttons.GuiAuditoryButton;
 import useless.legacyui.Gui.GuiElements.GuiRegion;
+import useless.legacyui.Gui.IGuiController;
 import useless.legacyui.Helper.KeyboardHelper;
 import useless.legacyui.LegacySoundManager;
-import useless.legacyui.LegacyUI;
 import useless.legacyui.ModSettings;
 import useless.legacyui.Sorting.LegacyCategoryManager;
 
 import java.util.Arrays;
 
-public class GuiLegacyCreative extends GuiInventory {
+public class GuiLegacyCreative extends GuiInventory implements IGuiController {
     private EntityPlayer player;
     private static int GUIx;
     private static int GUIy;
@@ -28,6 +30,8 @@ public class GuiLegacyCreative extends GuiInventory {
     private static float scrollProgress = 0f;
     public static LegacyContainerPlayerCreative container;
     protected GuiRegion scrollBar;
+    protected GuiRegion bottomCreativeSlots;
+    protected GuiRegion topCreativeSlots;
     protected GuiAuditoryButton clearButton;
     protected GuiAuditoryButton craftButton;
     protected GuiAuditoryButton[] tabButtons = new GuiAuditoryButton[8];
@@ -149,6 +153,8 @@ public class GuiLegacyCreative extends GuiInventory {
         }
 
         scrollBar = new GuiRegion(100, GUIx + 251, GUIy + 43, 15, 112);
+        bottomCreativeSlots = new GuiRegion(101, GUIx + 11, GUIy + 135, 234, 18);
+        topCreativeSlots = new GuiRegion(101, GUIx + 11, GUIy + 45, 234, 18);
         clearButton = new GuiAuditoryButton(controlList.size() + 2, GUIx + 209, GUIy + 158, 20, 20, "X");
         clearButton.visible = false;
         controlList.add(clearButton);
@@ -169,10 +175,22 @@ public class GuiLegacyCreative extends GuiInventory {
                 if (LegacyContainerPlayerCreative.getTotalRows() <= LegacyContainerPlayerCreative.slotsTall){
                     scrollProgress = 0f;
                 }
-
                 setContainerSlots();
             }
         }
+        if (mc.inputType == InputType.CONTROLLER){
+            if (scrollBar.isHovered((int) mc.controllerInput.cursorX, (int) mc.controllerInput.cursorY)){
+                if (mc.controllerInput.buttonA.isPressed()){
+                    scrollProgress = (float) ((mc.controllerInput.cursorY-scrollBar.getY())/scrollBar.getHeight());
+                    selectRow(Math.round((LegacyContainerPlayerCreative.getTotalRows() - LegacyContainerPlayerCreative.slotsTall) * scrollProgress));
+                    if (LegacyContainerPlayerCreative.getTotalRows() <= LegacyContainerPlayerCreative.slotsTall){
+                        scrollProgress = 0f;
+                    }
+                    setContainerSlots();
+                }
+            }
+        }
+
         super.drawScreen(x,y, renderPartialTicks);
         UtilGui.bindTexture("/assets/legacyui/gui/legacycreative.png");
         UtilGui.drawTexturedModalRect(this, craftButton.xPosition, craftButton.yPosition, craftButton.isHovered(x, y) ? 186+craftButton.width:186, 184, craftButton.width, craftButton.height, 1f/guiTextureWidth); // draw craftButton
@@ -195,5 +213,51 @@ public class GuiLegacyCreative extends GuiInventory {
         }
 
         drawStringCenteredNoShadow(fontRenderer, LegacyCategoryManager.creativeCategories.get(currentTab).getTranslatedKey(), GUIx + xSize/2, GUIy + 32, ModSettings.Colors.GuiLabelColor());
+    }
+
+    @Override
+    public void GuiControls(ControllerInput controllerInput) {
+        if (controllerInput.buttonR.pressedThisFrame()){
+            scrollTab(1);
+        }
+        if (controllerInput.buttonL.pressedThisFrame()){
+            scrollTab(-1);
+        }
+        if (controllerInput.joyRight.getY() >= 0.8f){
+            selectRow(currentRow + 1);
+        }
+        if (controllerInput.joyRight.getY() <= -0.8f){
+            selectRow(currentRow - 1);
+        }
+        if (bottomCreativeSlots.isHovered((int) mc.controllerInput.cursorX, (int) mc.controllerInput.cursorY)){
+            if (mc.controllerInput.digitalPad.down.pressedThisFrame()){
+                selectRow(currentRow + 1);
+            }
+        }
+        if (topCreativeSlots.isHovered((int) mc.controllerInput.cursorX, (int) mc.controllerInput.cursorY)){
+            if (mc.controllerInput.digitalPad.up.pressedThisFrame()){
+                selectRow(currentRow - 1);
+            }
+        }
+    }
+
+    @Override
+    public boolean playDefaultPressSound() {
+        return false;
+    }
+
+    @Override
+    public boolean enableDefaultSnapping() {
+        if (bottomCreativeSlots.isHovered((int) mc.controllerInput.cursorX, (int) mc.controllerInput.cursorY)){
+            if (mc.controllerInput.digitalPad.down.pressedThisFrame()){
+                return false;
+            }
+        }
+        if (topCreativeSlots.isHovered((int) mc.controllerInput.cursorX, (int) mc.controllerInput.cursorY)){
+            if (mc.controllerInput.digitalPad.up.pressedThisFrame()){
+                return false;
+            }
+        }
+        return true;
     }
 }

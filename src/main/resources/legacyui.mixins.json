@@ -6,6 +6,7 @@
   "mixins": [
   ],
   "client": [
+    "ContainerMixin",
     "EntityPlayerSPMixin",
     "MinecraftMixin",
     "Gamemodes.GamemodeCreativeMixin",
@@ -16,7 +17,7 @@
     "Gui.GuiInventoryAccessor",
     "Gui.GuiOptionsBaseMixin",
     "Gui.GuiScreenMixin",
-    "ContainerMixin",
+    "ControllerInputMixin",
     "Multiplayer.PlayerControllerMPMixin"
   ],
   "injectors": {

@@ -7,8 +7,9 @@ import net.minecraft.client.render.Lighting;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.lang.I18n;
 import org.lwjgl.opengl.GL11;
-import useless.legacyui.Gui.Buttons.GuiAuditoryButton;
+import useless.legacyui.Gui.GuiElements.Buttons.GuiAuditoryButton;
 import useless.legacyui.LegacySoundManager;
+import useless.legacyui.LegacyUI;
 import useless.legacyui.Mixins.Gui.GuiInventoryAccessor;
 import useless.legacyui.ModSettings;
 
@@ -35,6 +36,8 @@ public class GuiLegacyInventory extends GuiInventory {
         if (armorButton != null){
             armorButton.xPosition += 44;
             armorButton.yPosition -= 5;
+        } else {
+            LegacyUI.LOGGER.info("Armor Button is null!");
         }
 
         // Create Crafting Button
@@ -63,12 +66,12 @@ public class GuiLegacyInventory extends GuiInventory {
 
     }
     protected void drawGuiContainerForegroundLayer() {
-        drawStringNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.inventory"),8, 82, ModSettings.Colors.GuiLabelColor());
     }
-    protected void drawGuiContainerBackgroundLayer(float f) {
+    protected void drawGuiContainerBackgroundLayer(float renderPartialTick) {
         UtilGui.bindTexture("/assets/legacyui/gui/legacyinventory.png");
         this.drawTexturedModalRect(GUIx, GUIy, 0, 0, this.xSize, this.ySize);
         renderPlayerDoll();
+        drawStringNoShadow(fontRenderer, I18n.getInstance().translateKey("legacyui.guilabel.inventory"),GUIx + 8,GUIy +82, ModSettings.Colors.GuiLabelColor());
     }
     private void renderPlayerDoll(){
         GL11.glEnable(32826);

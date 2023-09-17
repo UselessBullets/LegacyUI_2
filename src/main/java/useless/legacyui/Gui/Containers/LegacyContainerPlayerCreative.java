@@ -1,90 +1,65 @@
 package useless.legacyui.Gui.Containers;
 
 import net.minecraft.core.item.ItemStack;
-import net.minecraft.core.lang.I18n;
+import net.minecraft.core.player.inventory.ContainerPlayerCreative;
 import net.minecraft.core.player.inventory.InventoryPlayer;
+import net.minecraft.core.player.inventory.slot.Slot;
+import net.minecraft.core.player.inventory.slot.SlotArmor;
 import net.minecraft.core.player.inventory.slot.SlotCreative;
+import useless.legacyui.Gui.GuiScreens.GuiLegacyCreative;
+import useless.legacyui.Gui.Slots.SlotNull;
+import useless.legacyui.Sorting.Item.ItemCategory;
+import useless.legacyui.Sorting.LegacyCategoryManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class LegacyContainerPlayerCreative extends LegacyContainerPlayerSurvival{
-    public int page = 0;
-    public int maxPage;
-    protected int creativeSlotsStart;
-    protected List<ItemStack> searchedItems = new ArrayList<ItemStack>();
-    public String searchText = "";
-    public static List<ItemStack> creativeItems = new ArrayList<ItemStack>();
-    public static int creativeItemsCount;
+public class LegacyContainerPlayerCreative extends ContainerPlayerCreative {
+    public static int slotsWide = 13;
+    public static int slotsTall = 6;
+    public static InventoryPlayer inventory;
     public LegacyContainerPlayerCreative(InventoryPlayer inventory, boolean isSinglePlayer) {
         super(inventory, isSinglePlayer);
+        this.inventory = inventory;
+        createSlots();
+        setSlots();
+    }
+    public void createSlots() {
+        inventorySlots.clear(); // Remove all slots made in super class
+        for (int index = 0; index < 5; ++index){ // Null Slots to keep alignment with server
+            this.addSlot(new SlotNull(this.playerInv,index, -5000, -5000));
+        }
+        for (int index = 0; index < 4; ++index) { // Create Armor Slots
+            this.addSlot(new SlotNull(this.playerInv, index + 5, -5000, -5000));
+        }
+        for (int row = 0; row < 3; ++row) { // Create Main Inventory Slots
+            for (int column = 0; column < 9; ++column) {
+                this.addSlot(new SlotNull(this.playerInv, row * 9 + column + 9, -5000,-5000));
+            }
+        }
+        for (int column = 0; column < 9; ++column) { // Create Hotbar slots
+            this.addSlot(new Slot(inventory, column, 48 + column * 18, 160));
+        }
         this.creativeSlotsStart = this.inventorySlots.size();
-        for (int i = 0; i < 36; ++i) {
-            int x = i % 6;
-            int y = i / 6;
-            this.addSlot(new SlotCreative(this.creativeSlotsStart + i, 174 + x * 18, 30 + y * 18, creativeItems.get(i)));
-        }
-        this.searchPage("");
-    }
-    public void setInventoryStatus(int page, String searchText) {
-        if (this.page != page) {
-            this.page = page;
-            this.updatePage();
-        }
-        if (!this.searchText.equals(searchText)) {
-            this.searchText = searchText;
-            this.searchPage(searchText);
+        for (int i = 0; i < slotsWide * slotsTall; ++i) {
+            int x = i % slotsWide;
+            int y = i / slotsWide;
+            this.addSlot(new SlotCreative(this.creativeSlotsStart + i, 12 + x * 18, 46 + y * 18, null));
         }
     }
+    public static int getTotalRows(){
+        ItemCategory currentCategory = LegacyCategoryManager.creativeCategories.get(GuiLegacyCreative.currentTab);
+        return (int) Math.ceil((double) currentCategory.itemStacks.length / slotsWide);
+    }
+    public void setSlots(){
+        ItemCategory currentCategory = LegacyCategoryManager.creativeCategories.get(GuiLegacyCreative.currentTab);
+        for (int i = 0; i < slotsWide * slotsTall; ++i) {
+            ItemStack item;
+            int index = i +  + (GuiLegacyCreative.currentRow * slotsWide);
+            if (index < currentCategory.itemStacks.length){
+                item = currentCategory.itemStacks[index];
+            } else {
+                item = null;
+            }
+            ((SlotCreative) this.inventorySlots.get(creativeSlotsStart+i)).item = item;
 
-    public void lastPage() {
-        if (this.page == 0) {
-            return;
         }
-        --this.page;
-        this.updatePage();
-    }
-
-    public void nextPage() {
-        if (this.page == this.maxPage) {
-            return;
-        }
-        ++this.page;
-        this.updatePage();
-    }
-
-    public void searchPage(String search) {
-        this.searchText = search;
-        this.searchedItems.clear();
-        this.page = 0;
-        I18n t = I18n.getInstance();
-        for (int i = 0; i < creativeItemsCount; ++i) {
-            if (!t.translateNameKey(creativeItems.get(i).getItemName()).toLowerCase().contains(search.toLowerCase())) continue;
-            this.searchedItems.add(creativeItems.get(i));
-        }
-        this.updatePage();
-    }
-
-    protected void updatePage() {
-        this.maxPage = this.searchedItems.size() / 36;
-        if (this.searchedItems.size() % 36 == 0) {
-            --this.maxPage;
-        }
-        if (this.maxPage == -1) {
-            this.maxPage = 0;
-        }
-        for (int i = 0; i < 36; ++i) {
-            ((SlotCreative)this.inventorySlots.get((int)(this.creativeSlotsStart + i))).item = i + this.page * 36 >= this.searchedItems.size() ? null : this.searchedItems.get(i + this.page * 36);
-        }
-        this.playerInv.player.updateCreativeInventory(this.page, this.searchText);
-    }
-
-    public String getSearchText() {
-        return this.searchText;
-    }
-
-    @Override
-    public int getHotbarSlotId(int number) {
-        return number + 8 + 27;
     }
 }

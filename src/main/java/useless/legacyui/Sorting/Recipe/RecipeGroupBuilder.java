@@ -8,11 +8,12 @@ import net.minecraft.core.crafting.recipe.RecipeShapeless;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import useless.legacyui.LegacyUI;
+import useless.legacyui.Sorting.UtilSorting;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeGroupBuilder {
+public class RecipeGroupBuilder{
     private static final List<IRecipe> allRecipes = CraftingManager.getInstance().getRecipeList();
     private static final List<IRecipe> unusedRecipes = new ArrayList<>(allRecipes);
     private Boolean isDebug = false;
@@ -137,148 +138,49 @@ public class RecipeGroupBuilder {
         }
         return this;
     }
-    public RecipeGroup build(){
 
+
+    public RecipeGroup build(){
         List<IRecipe> unused_copy = new ArrayList<>(unusedRecipes);
         List<IRecipe> recipeGroupRecipes = new ArrayList<>();
         int removeOffset = 0;
-        for (int i = 0; i < unused_copy.size(); i++) {
+        for (int i = 0; i < unused_copy.size(); i++) { // Add exclusive Recipes
             IRecipe currentRecipe = unused_copy.get(i);
             if (currentRecipe instanceof RecipeShaped || currentRecipe instanceof RecipeShapeless){
                 ItemStack recipeItem = currentRecipe.getRecipeOutput();
-                boolean foundMatch = false;
-                for (ItemStack stack: excludeItemList) {
-                    if (recipeItem.itemID == stack.itemID && recipeItem.getMetadata() == stack.getMetadata()){
-                        foundMatch = true;
-                        continue;
-                    }
-                }
-                if (foundMatch){
+                if (UtilSorting.stackInItemList(excludeItemList,recipeItem)){
                     continue;
                 }
-                for (Class clazz : exclusiveClassList){
-                    try {
-                        if (recipeItem.itemID < Block.blocksList.length){
-                            clazz.cast(Block.getBlock(recipeItem.itemID));
-                        } else {
-                            clazz.cast(recipeItem.getItem());
-                        }
-                        recipeGroupRecipes.add(currentRecipe);
-                        unusedRecipes.remove(i - removeOffset);
-                        removeOffset++;
-                        foundMatch = true;
-                        continue;
-                    } catch (ClassCastException e){
-                    }
-                    if (foundMatch){
-                        continue;
-                    }
-
-                }
-                if (foundMatch){
-                    continue;
-                }
-                for (ItemStack stack : exclusiveItemList){
-                    if (recipeItem.itemID == stack.itemID && recipeItem.getMetadata() == stack.getMetadata()){
-                        recipeGroupRecipes.add(currentRecipe);
-                        unusedRecipes.remove(i - removeOffset);
-                        removeOffset++;
-                        foundMatch = true;
-                        continue;
-                    }
-                }
-                if (foundMatch){
-                    continue;
-                }
-                for (String keyword : exclusiveKeywordList){
-                    if (recipeItem.getItem().getKey().contains(keyword)){
-                        recipeGroupRecipes.add(currentRecipe);
-                        unusedRecipes.remove(i-removeOffset);
-                        removeOffset++;
-                        foundMatch = true;
-                        continue;
-                    }
-                }
-                if (foundMatch){
+                if (UtilSorting.stackInClassList(exclusiveClassList,recipeItem) || UtilSorting.stackInItemList(exclusiveItemList, recipeItem) || UtilSorting.stackInKeywordList(exclusiveKeywordList, recipeItem)) {
+                    recipeGroupRecipes.add(currentRecipe);
+                    unusedRecipes.remove(i - removeOffset);
+                    removeOffset++;
                     continue;
                 }
             }
         }
-        for (int i = 0; i < allRecipes.size(); i++) {
+        for (int i = 0; i < allRecipes.size(); i++) { // Add inclusive recipes
             IRecipe currentRecipe = allRecipes.get(i);
             if (currentRecipe instanceof RecipeShaped || currentRecipe instanceof RecipeShapeless){
                 ItemStack recipeItem = currentRecipe.getRecipeOutput();
-                boolean foundMatch = false;
-                for (ItemStack stack: excludeItemList) {
-                    if (recipeItem.itemID == stack.itemID && recipeItem.getMetadata() == stack.getMetadata()){
-                        foundMatch = true;
-                        continue;
-                    }
-                }
-                if (foundMatch){
+                if (UtilSorting.stackInItemList(excludeItemList,recipeItem)){
                     continue;
                 }
-                for (IRecipe groupRecipe : recipeGroupRecipes){
-                    if (groupRecipe.equals(currentRecipe)){
-                        foundMatch = true;
-                        continue;
-                    }
-                }
-                if (foundMatch){
+                if (UtilSorting.recipeInRecipeList(recipeGroupRecipes, currentRecipe)){ // Stack already in list
                     continue;
                 }
-                for (Class clazz : inclusiveClassList){
-                    try {
-                        if (recipeItem.itemID < Block.blocksList.length){
-                            clazz.cast(Block.getBlock(recipeItem.itemID));
-                        } else {
-                            clazz.cast(recipeItem.getItem());
-                        }
-                        recipeGroupRecipes.add(currentRecipe);
-                        foundMatch = true;
-                        continue;
-                    } catch (ClassCastException e){
-                    }
-                    if (foundMatch){
-                        continue;
-                    }
-
-                }
-                if (foundMatch){
-                    continue;
-                }
-                for (ItemStack stack : inclusiveItemList){
-                    if (recipeItem.itemID == stack.itemID && recipeItem.getMetadata() == stack.getMetadata()){
-                        recipeGroupRecipes.add(currentRecipe);
-                        foundMatch = true;
-                        continue;
-                    }
-                }
-                if (foundMatch){
-                    continue;
-                }
-                for (String keyword : inclusiveKeywordList){
-                    if (recipeItem.getItem().getKey().contains(keyword)){
-                        recipeGroupRecipes.add(currentRecipe);
-                        foundMatch = true;
-                        continue;
-                    }
-                }
-                if (foundMatch){
+                if (UtilSorting.stackInClassList(inclusiveClassList, recipeItem) || UtilSorting.stackInItemList(inclusiveItemList, recipeItem) || UtilSorting.stackInKeywordList(inclusiveKeywordList, recipeItem)){
+                    recipeGroupRecipes.add(currentRecipe);
                     continue;
                 }
             }
         }
         if (isDebug){
             LegacyUI.LOGGER.info("Group");
-            printRecipeList(recipeGroupRecipes);
+            UtilSorting.printRecipeList(recipeGroupRecipes);
         }
         return new RecipeGroup(recipeGroupRecipes.toArray());
     }
 
-    private void printRecipeList(List<IRecipe> recipes){
-        for (IRecipe recipe : recipes){
-            LegacyUI.LOGGER.info("Output:" + recipe.getRecipeOutput());
-        }
-    }
+
 }

@@ -387,7 +387,7 @@ public class GuiLegacyCrafting extends GuiContainer implements IGuiController {
             if (controllerInput.digitalPad.down.pressedThisFrame()){
                 scrollGroup(1);
             }
-            if (controllerInput.buttonA.pressedThisFrame()){
+            if (controllerInput.buttonA.pressedThisFrame() && !craftingButton.isHovered((int)mc.controllerInput.cursorX, (int) mc.controllerInput.cursorY)){
                 craft();
             }
         }

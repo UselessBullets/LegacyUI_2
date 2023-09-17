@@ -1,5 +1,6 @@
 package useless.legacyui.Gui.GuiScreens;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiInventory;
 import net.minecraft.core.entity.player.EntityPlayer;
 import org.lwjgl.input.Keyboard;
@@ -12,6 +13,8 @@ import useless.legacyui.LegacySoundManager;
 import useless.legacyui.ModSettings;
 import useless.legacyui.Sorting.LegacyCategoryManager;
 
+import java.util.Arrays;
+
 public class GuiLegacyCreative extends GuiInventory {
     private static int GUIx;
     private static int GUIy;
@@ -23,6 +26,7 @@ public class GuiLegacyCreative extends GuiInventory {
     protected LegacyContainerPlayerCreative container;
     protected GuiRegion scrollBar;
     protected GuiAuditoryButton clearButton;
+    protected GuiAuditoryButton[] tabButtons = new GuiAuditoryButton[8];
     public GuiLegacyCreative(EntityPlayer player) {
         super(player);
         this.container = (LegacyContainerPlayerCreative)player.inventorySlots;
@@ -68,7 +72,37 @@ public class GuiLegacyCreative extends GuiInventory {
             }
         }
     }
+    protected void buttonPressed(GuiButton guibutton) {
+        super.buttonPressed(guibutton);
+        boolean shifted = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
+        if (guibutton == clearButton){
+            if (shifted){
+                clearInventory();
+            } else {
+                clearHotbar();
+            }
+        }
+        for (int i = 0; i < tabButtons.length; i++) {
+            if (tabButtons[i] == guibutton){
+                selectTab(i);
+            }
+        }
+    }
+    private void clearInventory(){
+        for (int i = 0; i < this.container.playerInv.getSizeInventory(); ++i) {
+            this.container.playerInv.setInventorySlotContents(i, null);
+        }
+        Arrays.fill(this.container.playerInv.armorInventory, null);
+    }
+    private void clearHotbar(){
+        for (int i = 0; i < 9; ++i) {
+            this.container.playerInv.setInventorySlotContents(i, null);
+        }
+    }
     public void setContainerSlots(){
+        for (int i = 0; i < tabButtons.length; i++) { // Only enable buttons if there is a corresponding recipe group
+            tabButtons[i].enabled = i < LegacyCategoryManager.creativeCategories.size();
+        }
         container.setSlots();
     }
     @Override
@@ -80,8 +114,15 @@ public class GuiLegacyCreative extends GuiInventory {
         GUIx = (this.width - this.xSize) / 2;
         GUIy = (this.height - this.ySize) / 2;
 
+        for (int i = 0; i < tabButtons.length; i++) {
+            tabButtons[i] = new GuiAuditoryButton(controlList.size() + 2, GUIx + (tabWidth-1)*i, GUIy, tabWidth-1, 24, "");
+            tabButtons[i].setMuted(true);
+            tabButtons[i].visible = false;
+            controlList.add(tabButtons[i]);
+        }
+
         scrollBar = new GuiRegion(100, GUIx + 251, GUIy + 43, 15, 112);
-        clearButton = new GuiAuditoryButton(101, GUIx + 209, GUIy + 159, 18, 18, "X");
+        clearButton = new GuiAuditoryButton(controlList.size() + 2, GUIx + 209, GUIy + 159, 18, 18, "X");
         clearButton.visible = false;
         controlList.add(clearButton);
 
@@ -106,6 +147,7 @@ public class GuiLegacyCreative extends GuiInventory {
         super.drawScreen(x,y, renderPartialTicks);
         UtilGui.bindTexture("/assets/legacyui/gui/legacycreative.png");
         UtilGui.drawTexturedModalRect(this, clearButton.xPosition, clearButton.yPosition, clearButton.isHovered(x, y) ? 146+18:146, 184, clearButton.width, clearButton.height, 1f/guiTextureWidth); // draw clearbutton
+        drawStringCentered(fontRenderer, clearButton.displayString, clearButton.xPosition + (clearButton.width/2), clearButton.yPosition + 5, 0xFFFFFF);
     }
     protected void drawGuiContainerForegroundLayer(){
     }

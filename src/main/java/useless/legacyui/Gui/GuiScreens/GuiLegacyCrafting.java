@@ -3,6 +3,7 @@ package useless.legacyui.Gui.GuiScreens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiContainer;
+import net.minecraft.client.input.InputType;
 import net.minecraft.client.input.controller.ControllerInput;
 import net.minecraft.core.crafting.recipe.IRecipe;
 import net.minecraft.core.entity.player.EntityPlayer;
@@ -10,6 +11,7 @@ import net.minecraft.core.lang.I18n;
 import org.lwjgl.input.Keyboard;
 import useless.legacyui.Gui.GuiElements.Buttons.GuiAuditoryButton;
 import useless.legacyui.Gui.Containers.LegacyContainerCrafting;
+import useless.legacyui.Gui.GuiElements.GuiButtonPrompt;
 import useless.legacyui.Gui.GuiElements.GuiRegion;
 import useless.legacyui.Gui.IGuiController;
 import useless.legacyui.Helper.KeyboardHelper;
@@ -19,6 +21,9 @@ import useless.legacyui.ModSettings;
 import useless.legacyui.Sorting.LegacyCategoryManager;
 import useless.legacyui.Sorting.Recipe.RecipeCategory;
 import useless.legacyui.Sorting.Recipe.RecipeGroup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GuiLegacyCrafting extends GuiContainer implements IGuiController {
     protected int craftingSize;
@@ -36,6 +41,7 @@ public class GuiLegacyCrafting extends GuiContainer implements IGuiController {
     public GuiAuditoryButton scrollDown;
     public GuiAuditoryButton craftingButton;
     public GuiRegion inventoryRegion;
+    public List<GuiButtonPrompt> prompts = new ArrayList<>();
     private static boolean showCraftDisplay = false;
     private static boolean previousShowDisplay = false;
     public GuiLegacyCrafting(EntityPlayer player, int craftingSize){
@@ -231,6 +237,11 @@ public class GuiLegacyCrafting extends GuiContainer implements IGuiController {
 
         inventoryRegion = new GuiRegion(100,GUIx + 147, GUIy + 94, 116, 75);
 
+        I18n translator = I18n.getInstance();
+        prompts.add(new GuiButtonPrompt( 101, 50, this.height-30, 0, 3,translator.translateKey("legacyui.prompt.craft")));
+        prompts.add(new GuiButtonPrompt( 102, prompts.get(0).xPosition + prompts.get(0).width + 3, this.height-30, 1, 3,translator.translateKey("legacyui.prompt.back")));
+        prompts.add(new GuiButtonPrompt( 102, prompts.get(1).xPosition + prompts.get(1).width + 3, this.height-30, 9,10, 3,translator.translateKey("legacyui.prompt.tabselect")));
+
         // Static Initialization
         currentTab = 0;
         currentScroll = 0;
@@ -275,6 +286,11 @@ public class GuiLegacyCrafting extends GuiContainer implements IGuiController {
             setContainerRecipes();
         }
         super.drawScreen(x, y, renderPartialTicks);
+        if (mc.inputType == InputType.CONTROLLER){
+            for (GuiButtonPrompt prompt: prompts) {
+                prompt.drawPrompt(mc, x, y);
+            }
+        }
     }
     protected void drawGuiContainerForegroundLayer(){
         UtilGui.bindTexture("/assets/legacyui/gui/legacycrafting.png");

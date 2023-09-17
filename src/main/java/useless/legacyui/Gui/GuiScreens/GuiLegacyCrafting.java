@@ -3,6 +3,7 @@ package useless.legacyui.Gui.GuiScreens;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiContainer;
+import net.minecraft.client.input.controller.ControllerInput;
 import net.minecraft.core.crafting.recipe.IRecipe;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.lang.I18n;
@@ -10,6 +11,7 @@ import org.lwjgl.input.Keyboard;
 import useless.legacyui.Gui.GuiElements.Buttons.GuiAuditoryButton;
 import useless.legacyui.Gui.Containers.LegacyContainerCrafting;
 import useless.legacyui.Gui.GuiElements.GuiRegion;
+import useless.legacyui.Gui.IGuiController;
 import useless.legacyui.Helper.KeyboardHelper;
 import useless.legacyui.LegacySoundManager;
 import useless.legacyui.LegacyUI;
@@ -18,7 +20,7 @@ import useless.legacyui.Sorting.LegacyCategoryManager;
 import useless.legacyui.Sorting.Recipe.RecipeCategory;
 import useless.legacyui.Sorting.Recipe.RecipeGroup;
 
-public class GuiLegacyCrafting extends GuiContainer {
+public class GuiLegacyCrafting extends GuiContainer implements IGuiController {
     protected int craftingSize;
     private static int GUIx;
     private static int GUIy;
@@ -356,5 +358,51 @@ public class GuiLegacyCrafting extends GuiContainer {
         }
 
         showCraftDisplay = result;
+    }
+
+    @Override
+    public void GuiControls(ControllerInput controllerInput) {
+        if (controllerInput.buttonR.pressedThisFrame()){
+            scrollTab(1);
+        }
+        if (controllerInput.buttonL.pressedThisFrame()){
+            scrollTab(-1);
+        }
+        if (controllerInput.buttonZL.pressedThisFrame()){
+            controllerInput.snapToSlot(this, 0);
+        }
+        if (controllerInput.buttonZR.pressedThisFrame()){
+            controllerInput.snapToSlot(this, LegacyContainerCrafting.inventorySlotsStart);
+        }
+        if (!inventoryRegion.isHovered((int)mc.controllerInput.cursorX, (int) mc.controllerInput.cursorY)){
+            if (controllerInput.digitalPad.right.pressedThisFrame()){
+                scrollSlot(1);
+            }
+            if (controllerInput.digitalPad.left.pressedThisFrame()){
+                scrollSlot(-1);
+            }
+            if (controllerInput.digitalPad.up.pressedThisFrame()){
+                scrollGroup(-1);
+            }
+            if (controllerInput.digitalPad.down.pressedThisFrame()){
+                scrollGroup(1);
+            }
+            if (controllerInput.buttonA.pressedThisFrame() && !craftingButton.isHovered((int)mc.controllerInput.cursorX, (int) mc.controllerInput.cursorY)){
+                craft();
+            }
+        }
+    }
+
+    @Override
+    public boolean playDefaultPressSound() {
+        return false;
+    }
+
+    @Override
+    public boolean enableDefaultSnapping() {
+        if (inventoryRegion.isHovered((int)mc.controllerInput.cursorX, (int) mc.controllerInput.cursorY)){
+            return true;
+        }
+        return false;
     }
 }

@@ -38,6 +38,7 @@ public class LegacyContainerCrafting extends Container {
     private final int z;
     private final int craftingSize;
     private final InventoryPlayer inventoryPlayer;
+    public static int inventorySlotsStart = 10;
     public LegacyContainerCrafting(InventoryPlayer inventoryplayer, int craftingSize) {
         if (craftingSize <= 4){
             craftMatrix = new InventoryCrafting(this, 2, 2);
@@ -88,6 +89,7 @@ public class LegacyContainerCrafting extends Container {
                 }
             }
         }
+        inventorySlotsStart = inventorySlots.size();
         // 3x9 inventory
         for (baseIterator = 0; baseIterator < 3; ++baseIterator) {
             for (subIterator = 0; subIterator < 9; ++subIterator) {

@@ -16,10 +16,18 @@ public class LegacySoundManager {
     }
     public static class play {
         public static void press(boolean randomPitch){
-            sndManager.playSound("legacyui.ui.press", SoundType.GUI_SOUNDS, volume, getPitch(randomPitch));
+            if (ModSettings.Sounds.UseLegacySounds()){
+                sndManager.playSound("legacyui.ui.press", SoundType.GUI_SOUNDS, volume, getPitch(randomPitch));
+            } else {
+                sndManager.playSound("random.ui_click", SoundType.GUI_SOUNDS, volume, getPitch(randomPitch));
+            }
         }
         public static void back(boolean randomPitch){
-            sndManager.playSound("legacyui.ui.back", SoundType.GUI_SOUNDS, volume, getPitch(randomPitch));
+            if (ModSettings.Sounds.UseLegacySounds()) {
+                sndManager.playSound("legacyui.ui.back", SoundType.GUI_SOUNDS, volume, getPitch(randomPitch));
+            } else {
+                sndManager.playSound("random.ui_back", SoundType.GUI_SOUNDS, volume, getPitch(randomPitch));
+            }
         }
         public static void craft(boolean randomPitch){
             sndManager.playSound("legacyui.ui.craft", SoundType.GUI_SOUNDS, volume, getPitch(randomPitch));

@@ -3,7 +3,6 @@ package useless.legacyui.Mixins;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.EntityPlayerSP;
 import net.minecraft.client.gui.GuiInventory;
-import net.minecraft.client.gui.GuiInventoryCreative;
 import net.minecraft.core.player.gamemode.Gamemode;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -27,4 +26,7 @@ public class MinecraftMixin {
             cir.setReturnValue(new GuiLegacyInventory(thePlayer));
         }
     }
+    /*@Inject(method = "run()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;startGame()V", shift = At.Shift.AFTER))
+    private void startOfGameInit(CallbackInfo ci){
+    }*/
 }
